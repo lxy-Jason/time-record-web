@@ -1,8 +1,9 @@
 <template>
-  <div class="flex h-screen justify-center">
-    <div class="left">111</div>
+  <div class="m-auto flex h-screen w-screen max-w-screen-xl justify-center">
+    <div class="left"></div>
     <div class="main">
-      <button @click="unfold">按钮</button>
+      <button class="switch" @click="unfold">按钮</button>
+      <div v-show="isFold" class="aside"></div>
     </div>
     <div class="right"></div>
   </div>
@@ -10,22 +11,31 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-const isFold = ref(true);
+const isFold = ref(false);
 const unfold = () => {
-  isFold.value = false;
+  isFold.value = !isFold.value;
 };
 </script>
 <style>
 @tailwind components;
 @layer components {
   .left {
-    @apply w-0 sm:hidden md:block lg:w-64 bg-orange-500;
+    @apply bg-orange-500 overflow-hidden lg:min-w-max hidden lg:block;
+    min-width: 375px;
   }
   .main {
-    @apply w-full sm:w-full md:w-96  bg-blue-500;
+    @apply w-full sm:w-full lg:w-max-w-main  bg-blue-500 relative;
+    min-width: 23.69rem;
   }
   .right {
-    @apply w-0 sm:w-0 md:w-64 bg-orange-500;
+    @apply bg-orange-500 sm:min-w-max overflow-hidden hidden md:block;
+    min-width: 375px;
+  }
+  .aside {
+    @apply w-64 bg-orange-500 h-screen absolute -left-64 transform translate-x-64 transition-all;
+  }
+  .switch {
+    @apply absolute left-0 top-1/2;
   }
 }
 </style>
