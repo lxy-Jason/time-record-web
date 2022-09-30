@@ -21,5 +21,6 @@ module.exports = {
   plugins: ["vue", "@typescript-eslint"],
   rules: {
     "vue/multi-word-component-names": "off",
+    "tailwindcss/no-custom-classname": "off",
   },
 };
