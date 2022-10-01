@@ -2,9 +2,7 @@
   <div class="m-auto flex h-screen w-screen max-w-screen-xl justify-center">
     <div class="left"></div>
     <div class="main">
-      <button ref="btn" class="switch" v-if="isFold" @click="unfold">
-        按钮
-      </button>
+      <button ref="btn" class="switch" v-if="fold" @click="unfold">按钮</button>
       <Transition>
         <div v-show="isShow" class="aside"></div>
       </Transition>
@@ -14,40 +12,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useThrottleFn } from "@vueuse/core";
+import { ref } from "vue";
+import { useFold } from "@/store";
+import { storeToRefs } from "pinia";
 
-const isFold = ref(false);
+const Fold = useFold();
+let { fold } = storeToRefs(Fold);
 const isShow = ref(false);
 const btn = ref();
 const unfold = () => {
   isShow.value = !isShow.value;
   console.log(isShow.value);
-};
-// 防抖
-const debouncedFn = useThrottleFn(() => {
-  getWindowResize();
-}, 300);
-// 获取屏幕尺寸
-const getWindowResize = function () {
-  windowWidth.value = window.innerWidth;
-  console.log(windowWidth.value);
-  size();
-};
-// 屏幕宽度
-const windowWidth = ref(0);
-// 生命周期
-onMounted(() => {
-  getWindowResize();
-  //给window加resize事件才生效
-  window.addEventListener("resize", debouncedFn);
-});
-const size = () => {
-  if (windowWidth.value > 640 && windowWidth.value <= 1024) {
-    isFold.value = true;
-  } else {
-    isFold.value = false;
-  }
 };
 </script>
 
@@ -59,8 +34,8 @@ const size = () => {
     min-width: 375px;
   }
   .main {
-    @apply w-full sm:w-full lg:w-max-w-main  bg-blue-500 relative;
-    min-width: 23.69rem;
+    @apply w-full md:w-full lg:w-max-w-main  bg-blue-500 relative;
+    min-width: 375px;
   }
   .right {
     @apply bg-pink-500 sm:min-w-max overflow-hidden hidden md:block;
