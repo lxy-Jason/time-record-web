@@ -15,7 +15,7 @@ const router = useRouter();
 watch(active, (newVal) => {
   router.push({ path: newVal });
 });
-const pathArr = ["Login", "Register", "", "Home"];
+const pathArr = ["Login", "Register", "Home", "Detail"];
 
 const isShow = () => {
   return !pathArr.includes(active.value);

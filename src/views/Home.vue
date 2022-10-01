@@ -2,7 +2,7 @@
   <div class="m-auto flex h-screen w-screen max-w-screen-xl justify-center">
     <div class="left"></div>
     <div class="main">
-      <button ref="btn" class="switch" v-if="fold" @click="unfold">按钮</button>
+      <button class="switch" v-if="fold" @click="unfold">按钮</button>
       <Transition>
         <div v-show="isShow" class="aside"></div>
       </Transition>
@@ -19,7 +19,6 @@ import { storeToRefs } from "pinia";
 const Fold = useFold();
 let { fold } = storeToRefs(Fold);
 const isShow = ref(false);
-const btn = ref();
 const unfold = () => {
   isShow.value = !isShow.value;
   console.log(isShow.value);
