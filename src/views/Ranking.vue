@@ -1,6 +1,7 @@
 <template>
-  <router-view></router-view>
+  <div>ranking</div>
 </template>
 
 <script setup lang="ts"></script>
-<style></style>
+
+<style scoped></style>

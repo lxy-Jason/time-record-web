@@ -1,16 +1,30 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
-const Home = () => import("@/views/Home.vue");
-const About = () => import("@/views/About.vue");
-
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    component: Home,
+    name: "Home",
+    component: () => import("@/views/Home.vue"),
   },
   {
-    path: "/about",
-    component: About,
+    path: "/login",
+    name: "Login",
+    component: () => import("@/views/Login.vue"),
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: () => import("@/views/Register.vue"),
+  },
+  {
+    path: "/ranking",
+    name: "Ranking",
+    component: () => import("@/views/Ranking.vue"),
+  },
+  {
+    path: "/study",
+    name: "Study",
+    component: () => import("@/views/Study.vue"),
   },
 ];
 
