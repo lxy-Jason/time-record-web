@@ -5,6 +5,7 @@ import "./style.css";
 import { createPinia } from "pinia";
 import { Tabbar, TabbarItem } from "vant";
 import "vant/lib/index.css";
+// import "echarts";
 
 const app = createApp(App);
 app.use(router);
