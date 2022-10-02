@@ -19,4 +19,7 @@ declare module '@vue/runtime-core' {
     Tabbar: typeof import('./src/components/Tabbar.vue')['default']
     User: typeof import('./src/components/User.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }

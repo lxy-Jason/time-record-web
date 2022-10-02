@@ -1,10 +1,10 @@
 <template>
-  <div class="relative mx-1">
+  <div class="relative mx-1" v-loading="loading">
     <div class="back" @click="back2pank">
       <img src="@/assets/fanhui.svg" />
     </div>
     <User></User>
-    <div ref="weekTime" class="charts"></div>
+    <v-chart class="charts" :option="option" />
     <div ref="dayTime" class="charts"></div>
   </div>
 </template>
@@ -12,47 +12,60 @@
 <script setup lang="ts">
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
-import { ref, nextTick, onUnmounted } from "vue";
+import { ref, nextTick, onUnmounted, onMounted } from "vue";
 import * as echarts from "echarts";
+import { getUserWeekApi } from "@/request/api";
+import getMinute from "@/utils/getHour";
+import VChart from "vue-echarts";
+
 const router = useRouter();
 
 const back2pank = () => {
   router.push({ path: "ranking" });
 };
-const weekTime = ref();
+const loading = ref(true);
+//获取本周数据
+const getWeekTime = async () => {
+  const res = await getUserWeekApi("zhangsan4");
+  if (res.code === 200) {
+    option.value.series[0].data[0].value = res.data.map((item) => {
+      return getMinute(item.totalTimeStamp) || 0;
+    });
+  }
+  loading.value = false;
+};
+
+const option = ref({
+  title: {
+    text: "本周学习时间",
+  },
+  radar: {
+    indicator: [
+      { name: "周一", max: 5 },
+      { name: "周二", max: 5 },
+      { name: "周三", max: 5 },
+      { name: "周四", max: 5 },
+      { name: "周五", max: 5 },
+      { name: "周六", max: 5 },
+      { name: "周日", max: 5 },
+    ],
+  },
+  series: [
+    {
+      type: "radar",
+      data: [
+        {
+          value: [] as number[],
+        },
+      ],
+    },
+  ],
+});
 const dayTime = ref();
 // 基于准备好的dom，初始化echarts实例
 nextTick(() => {
-  let weekChart = echarts.init(weekTime.value);
-
-  // 绘制图表
-  weekChart.setOption({
-    title: {
-      text: "本周学习时间",
-    },
-    radar: {
-      indicator: [
-        { name: "周一" },
-        { name: "周二" },
-        { name: "周三" },
-        { name: "周四" },
-        { name: "周五" },
-        { name: "周六" },
-        { name: "周日" },
-      ],
-    },
-    series: [
-      {
-        type: "radar",
-        data: [
-          {
-            value: [6, 3, 4, 3, 4, 2],
-          },
-        ],
-      },
-    ],
-  });
   let dayChart = echarts.init(dayTime.value);
+  //日时长
   dayChart.setOption({
     title: {
       text: "今天学习时长",
@@ -100,13 +113,16 @@ nextTick(() => {
     ],
   });
   window.onresize = function () {
-    weekChart.resize();
+    // weekChart.resize();
     dayChart.resize();
   };
 });
-onUnmounted(() => {
-  window.onresize = null;
-});
+onMounted(() => {
+  getWeekTime();
+}),
+  onUnmounted(() => {
+    window.onresize = null;
+  });
 </script>
 
 <style scoped>

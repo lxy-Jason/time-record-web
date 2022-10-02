@@ -26,6 +26,7 @@ specifiers:
   vant: ^3.6.3
   vite: ^3.1.0
   vue: ^3.2.37
+  vue-echarts: ^6.2.3
   vue-router: ^4.1.5
   vue-tsc: ^0.40.4
 
@@ -37,6 +38,7 @@ dependencies:
   pinia: 2.0.22_bfjwoga25wxjazzogo7o372nwq
   vant: 3.6.3_vue@3.2.40
   vue: 3.2.40
+  vue-echarts: 6.2.3_echarts@5.4.0+vue@3.2.40
   vue-router: 4.1.5_vue@3.2.40
 
 devDependencies:
@@ -1901,6 +1903,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /resize-detector/0.3.0:
+    resolution: {integrity: sha512-R/tCuvuOHQ8o2boRP6vgx8hXCCy87H1eY9V5imBYeVNyNVpuL9ciReSccLj2gDcax9+2weXy3bc8Vv+NRXeEvQ==}
+    dev: false
+
   /resolve-from/4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -2276,6 +2282,23 @@ packages:
         optional: true
     dependencies:
       vue: 3.2.40
+
+  /vue-echarts/6.2.3_echarts@5.4.0+vue@3.2.40:
+    resolution: {integrity: sha512-xHzUvgsgk/asJTcNa8iVVwoovZU3iEUHvmBa3bzbiP3Y6OMxM1YXsoWOKVmVVaUusGs4ob4pSwjwNy2FemAz9w==}
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.5
+      echarts: ^5.1.2
+      vue: ^2.6.12 || ^3.1.1
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      echarts: 5.4.0
+      resize-detector: 0.3.0
+      vue: 3.2.40
+      vue-demi: 0.13.11_vue@3.2.40
+    dev: false
 
   /vue-eslint-parser/9.1.0_eslint@8.24.0:
     resolution: {integrity: sha512-NGn/iQy8/Wb7RrRa4aRkokyCZfOUWk19OP5HP6JEozQFX5AoS/t+Z0ZN7FY4LlmWc4FNI922V7cvX28zctN8dQ==}

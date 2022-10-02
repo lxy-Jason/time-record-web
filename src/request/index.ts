@@ -8,4 +8,7 @@ const instance = axios.create({
 instance.interceptors.request.use((config) => {
   return config;
 });
+instance.interceptors.response.use((value) => {
+  return value.data;
+});
 export default instance;
