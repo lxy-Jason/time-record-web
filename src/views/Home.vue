@@ -1,17 +1,29 @@
 <template>
   <div class="m-auto flex h-screen w-screen max-w-screen-xl justify-center">
-    <div class="left"></div>
-    <div class="main">
-      <button class="switch" v-if="fold" @click="unfold">按钮</button>
-      <Transition>
-        <div v-show="isShow" class="aside"></div>
-      </Transition>
+    <div class="left">
+      <Ranking></Ranking>
     </div>
-    <div class="right"></div>
+    <div class="main">
+      <transition name="btn">
+        <button class="fold" v-if="fold" @click="unfold">按钮</button>
+      </transition>
+
+      <transition>
+        <div v-show="isShow" class="aside">
+          <button class="unFold" @click="unfold">按钮</button>
+          <Ranking></Ranking>
+        </div>
+      </transition>
+    </div>
+    <div class="right">
+      <Detail></Detail>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Ranking from "@/views/Ranking.vue";
+import Detail from "@/views/Detail.vue";
 import { ref } from "vue";
 import { useFold } from "@/store";
 import { storeToRefs } from "pinia";
@@ -21,7 +33,6 @@ let { fold } = storeToRefs(Fold);
 const isShow = ref(false);
 const unfold = () => {
   isShow.value = !isShow.value;
-  console.log(isShow.value);
 };
 </script>
 
@@ -29,24 +40,27 @@ const unfold = () => {
 @tailwind components;
 @layer components {
   .left {
-    @apply bg-orange-500 overflow-hidden lg:min-w-max hidden lg:block;
+    @apply overflow-hidden lg:min-w-max hidden lg:block;
     min-width: 375px;
   }
   .main {
-    @apply w-full md:w-full lg:w-max-w-main  bg-blue-500 relative;
+    @apply w-full md:w-full lg:w-max-w-main  bg-blue-500 relative overflow-hidden;
     min-width: 375px;
   }
   .right {
-    @apply bg-pink-500 sm:min-w-max overflow-hidden hidden md:block;
+    @apply sm:min-w-max overflow-hidden hidden md:block;
     min-width: 375px;
   }
   .aside {
-    @apply bg-orange-500 h-screen absolute;
+    @apply h-screen absolute;
     min-width: 375px;
     max-width: 375px;
   }
-  .switch {
-    @apply absolute left-0 top-1/2 z-10;
+  .fold {
+    @apply absolute left-0 top-1/2 z-0;
+  }
+  .unFold {
+    @apply absolute -right-8 top-1/2 z-10;
   }
 }
 .v-enter-to,
@@ -60,7 +74,6 @@ const unfold = () => {
 
 .v-enter-from,
 .v-leave-to {
-  opacity: 0;
   transform: translateX(-100%);
 }
 </style>

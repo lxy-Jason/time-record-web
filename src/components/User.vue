@@ -27,7 +27,7 @@ const jump2detail = () => {
 <style scoped>
 @tailwind components;
 .user {
-  @apply p-2 flex justify-start items-center border-b border-gray-300 m-2;
+  @apply px-2 py-2 flex justify-start items-center border-b border-gray-300 mx-2;
 }
 .online {
   @apply w-2 h-2 bg-green-500 rounded-full  inline-block m-2;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-full bg-white">
     <User></User>
     <User></User>
     <User></User>
