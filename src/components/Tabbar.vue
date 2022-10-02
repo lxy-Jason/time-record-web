@@ -22,7 +22,6 @@ const isShow = () => {
 };
 watchEffect(() => {
   let curPath = toRaw(router).currentRoute.value.name;
-  console.log(toRaw(router).currentRoute.value);
   if (typeof curPath === "string") {
     active.value = curPath;
   }

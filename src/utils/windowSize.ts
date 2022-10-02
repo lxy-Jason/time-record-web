@@ -30,7 +30,6 @@ export default () => {
   };
   const getWindowResize = function () {
     windowWidth = window.innerWidth;
-    console.log(windowWidth);
     size();
   };
   getWindowResize();
