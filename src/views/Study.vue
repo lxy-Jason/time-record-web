@@ -40,7 +40,6 @@ import { Notify, Circle, Button, Dialog } from "vant";
 import "vant/es/notify/style";
 import { timeFormat } from "@/utils/timeFormat";
 import { timeDiff } from "@/utils/timeDiff";
-import { log } from "console";
 import { getTotalTime } from "@/utils/getTotalTime";
 
 let totalTime = ref("00:00:00");
@@ -49,12 +48,15 @@ let minutes = ref(0);
 let hours = ref(0);
 let startFlag = ref(true);
 let timer: any;
+let setTimer:any;
 
-//计时器(待优化，第一秒会卡顿，计时不准，多次停顿会越来越慢，setInterval可能不准1s调用)
-const timeCount = () => {
+//计时器(后期优化动画)
+const timeCount = async() => {
   if (startFlag.value) {
     return;
   }
+  let studyTime = Number(localStorage.getItem("studyTime"))
+  setTimer = setTimeout(()=>{seconds.value++;clearTimeout(setTimer)},(Math.ceil(studyTime/1000)-(studyTime/1000))*1000);
   timer = setInterval(() => {
     seconds.value++;
     if (seconds.value >= 60) {
@@ -84,6 +86,7 @@ const startLearn = () => {
 //暂停计时
 const pauseTime = () => {
   clearInterval(timer);
+  clearTimeout(setTimer);
   let temppause = new Date().getTime();
   let studyTime =
     Number(localStorage.getItem("studyTime")) +
@@ -109,9 +112,6 @@ const saveTime = async () => {
   let startTime = Number(localStorage.getItem("startTime"));
   let timeStamp = Number(localStorage.getItem("studyTime"));
   let endTime = timeStamp + startTime;
-  console.log(getTimeDiff());
-  console.log(endTime);
-  console.log(timeStamp);
   let data = {
     username: "zhangsan3",
     time: getTimeDiff(),
@@ -147,7 +147,6 @@ const getWeekTime = async () => {
 // 时间上传
 const timeUpload = async (data: object) => {
   const { data: res } = await timeUploadApi(data);
-  console.log(res);
   // const { data } = res.data;
   if (res.code === 200 && res.msg !== "error") {
     Notify({ type: "success", message: res.msg });
@@ -175,7 +174,10 @@ const init = () => {
     timeCount();
   } else {
     let nowTime = new Date().getTime();
-    let studyTime = nowTime - Number(localStorage.getItem('lastPause')) + Number(localStorage.getItem('studyTime'));
+    let studyTime =
+      nowTime -
+      Number(localStorage.getItem("lastPause")) +
+      Number(localStorage.getItem("studyTime"));
     curTime.value = getTotalTime(studyTime);
     startFlag.value = false;
     timeCount();
