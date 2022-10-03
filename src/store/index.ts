@@ -12,3 +12,13 @@ export const useFold = defineStore("fold", {
     },
   },
 });
+export const useShowBack = defineStore("showBack", {
+  state: () => {
+    return { showBack: false };
+  },
+  actions: {
+    getFold(showBack: boolean) {
+      this.showBack = showBack;
+    },
+  },
+});

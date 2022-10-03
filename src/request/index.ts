@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: "https://api.aiwan.run/",
-  timeout: 5000,
+  timeout: 10000,
 });
 
 instance.interceptors.request.use((config) => {

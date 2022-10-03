@@ -1,9 +1,9 @@
 <template>
-  <div class="relative mx-1" v-loading="loading">
-    <div class="back" @click="back2pank">
+  <div class="relative mx-1 p-2" v-loading="loading">
+    <div class="back" v-if="showBack" @click="back2pank">
       <img src="@/assets/fanhui.svg" />
     </div>
-    <User></User>
+    <User :info="info" :index="Number(info.rank)"></User>
     <v-chart class="charts" :option="option" />
     <v-chart class="charts" :option="dayOption" />
   </div>
@@ -12,27 +12,44 @@
 <script setup lang="ts">
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
-import { ref, nextTick, onUnmounted, onMounted } from "vue";
-import { getUserWeekApi } from "@/request/api";
+import { ref, onMounted } from "vue";
+import { getUserTodayApi, getUserWeekApi } from "@/request/api";
 import getMinute from "@/utils/getHour";
 import VChart from "vue-echarts";
 import "echarts";
+import { useRoute } from "vue-router";
+import { useShowBack } from "@/store";
+import { storeToRefs } from "pinia";
 
+const ShowBack = useShowBack();
+let { showBack } = storeToRefs(ShowBack);
 const router = useRouter();
-
+const route = useRoute();
+const info = route.query;
 const back2pank = () => {
   router.push({ path: "ranking" });
 };
-const loading = ref(true);
+const loading = ref(false);
 //获取本周数据
 const getWeekTime = async () => {
-  const res = await getUserWeekApi("zhangsan4");
+  const res = await getUserWeekApi((info.username as string) || "zhangsan4");
   if (res.code === 200) {
     option.value.series[0].data[0].value = res.data.map((item) => {
       return getMinute(item.totalTimeStamp) || 0;
     });
   }
   loading.value = false;
+};
+//获取当天数据
+const getTodayTime = async () => {
+  const res = await getUserTodayApi((info.username as string) || "zhangsan4");
+  if (res.code === 200) {
+    dayOption.value.series[0].data = res.data.map(
+      (item: { time: string | undefined }) => {
+        return Number(item.time || 0);
+      }
+    );
+  }
 };
 const option = ref({
   title: {
@@ -97,7 +114,7 @@ const dayOption = ref({
       type: "line",
       smooth: true,
       // prettier-ignore
-      data: [93, 60, 90, 120,0,0, 150, 180, ],
+      data: [],
       markArea: {
         itemStyle: {
           color: "rgba(255, 173, 177, 0.4)",
@@ -109,6 +126,7 @@ const dayOption = ref({
 
 onMounted(() => {
   getWeekTime();
+  getTodayTime();
 });
 </script>
 
