@@ -1,3 +1,5 @@
+import pinia from "@/store";
+import useUserInfo from "@/store/modules/useUserInfo";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -45,6 +47,19 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   routes,
   history: createWebHashHistory(),
+});
+
+const userInfo = useUserInfo(pinia);
+
+router.beforeEach((to) => {
+  if (to.path !== "/login") {
+    if (!userInfo.username) {
+      return "/login";
+    }
+  }
+  if (to.path === "/login" && userInfo.username) {
+    return "/";
+  }
 });
 
 export default router;
