@@ -1,4 +1,5 @@
 import request from "./index";
+import { AllUserWeekResponse } from "@/types";
 
 //登录
 export const loginApi = (data: object) => request.post("user/login", data);
@@ -9,8 +10,12 @@ export const getUserWeekApi = (username: string) =>
   );
 //获取所有用户本周学习总时长
 export const getAllUserWeekApi = () =>
-  request.get<unknown, { code: number; data: [] }>("time/getAllUserWeekTime");
+  request.get<unknown, AllUserWeekResponse>("time/getAllUserWeekTime");
 
 //获取用户当天数据
 export const getUserTodayApi = (username: string) =>
   request.get(`time/getUserTodayInterval?username=${username}`);
+
+//获取用户本周时长
+export const getWeekApi = (data: string) =>
+  request.get(`time/getWeek?username=${data}`);

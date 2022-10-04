@@ -6,13 +6,13 @@
     </div>
     <div class="profile">
       <p>
-        <strong>{{ info?.username }}</strong>
+        <strong>{{ username }}</strong>
       </p>
       <img class="icon" src="@/assets/jiangzhangxunzhang.svg" />
-      <span class="align-middle">No.{{ index + 1 }}</span>
+      <span class="align-middle">No.{{ index }}</span>
       <div class="time">
         <img class="icon" src="@/assets/shijian.svg" />
-        <span class="align-middle">{{ info?.time }}</span>
+        <span class="align-middle">{{ time }}</span>
       </div>
     </div>
   </div>
@@ -21,26 +21,40 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
+import { useShowBack, useUserDetail } from "@/store";
+import { storeToRefs } from "pinia";
+
+const ShowBack = useShowBack();
+const userDetail = useUserDetail();
+let { showBack } = storeToRefs(ShowBack);
 const router = useRouter();
 
 const props = defineProps({
-  info: {
-    type: Object,
-    default: null,
+  username: {
+    type: String,
+    default:
+      JSON.parse(localStorage.getItem("user-info") as string).username || "",
+  },
+  time: {
+    type: String,
+    default: "00:00:00",
   },
   index: {
     type: Number,
     default: 0,
   },
 });
+
 const userData = reactive({
-  username: props.info.username,
-  time: props.info.time,
+  username: props.username,
+  time: props.time,
   rank: props.index,
 });
-
 const jump2detail = () => {
-  router.push({ path: "detail", query: userData });
+  userDetail.$patch({ userDetail: userData });
+  if (showBack.value) {
+    router.push({ path: "detail" });
+  }
 };
 </script>
 

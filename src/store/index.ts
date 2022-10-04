@@ -1,4 +1,5 @@
 import { createPinia, defineStore } from "pinia";
+import useUserInfo from "./modules/useUserInfo";
 
 const pinia = createPinia();
 
@@ -19,8 +20,34 @@ export const useShowBack = defineStore("showBack", {
     return { showBack: false };
   },
   actions: {
-    getFold(showBack: boolean) {
+    getShowBack(showBack: boolean) {
       this.showBack = showBack;
+    },
+  },
+});
+
+export interface DetailData {
+  username: string;
+  time: string;
+  rank: number;
+}
+
+export const useUserDetail = defineStore("userDetail", {
+  state: (): {
+    userDetail: DetailData;
+  } => {
+    const userInfoStore = useUserInfo();
+    return {
+      userDetail: {
+        username: userInfoStore.username,
+        time: "00:00:00",
+        rank: 0,
+      },
+    };
+  },
+  actions: {
+    getUserDatil(userDetail: DetailData) {
+      this.userDetail = userDetail;
     },
   },
 });

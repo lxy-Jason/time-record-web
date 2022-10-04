@@ -3,7 +3,11 @@
     <div class="back" v-if="showBack" @click="back2pank">
       <img src="@/assets/fanhui.svg" />
     </div>
-    <User :info="info" :index="Number(info.rank)"></User>
+    <User
+      :username="userData.username"
+      :time="userData.time"
+      :index="userData.rank"
+    ></User>
     <v-chart class="charts" :option="option" />
     <v-chart class="charts" :option="dayOption" />
   </div>
@@ -12,27 +16,27 @@
 <script setup lang="ts">
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
-import { getUserTodayApi, getUserWeekApi } from "@/request/api";
+import { ref, onMounted, watch, Ref } from "vue";
+import { getUserTodayApi, getUserWeekApi, getWeekApi } from "@/request/api";
 import getMinute from "@/utils/getHour";
 import VChart from "vue-echarts";
 import "echarts";
-import { useRoute } from "vue-router";
-import { useShowBack } from "@/store";
+import { useShowBack, useUserDetail } from "@/store";
 import { storeToRefs } from "pinia";
 
 const ShowBack = useShowBack();
+const UserDetail = useUserDetail();
 let { showBack } = storeToRefs(ShowBack);
+let { userDetail } = storeToRefs(UserDetail);
 const router = useRouter();
-const route = useRoute();
-const info = route.query;
 const back2pank = () => {
   router.push({ path: "ranking" });
 };
-const loading = ref(false);
+const loading = ref(true);
 //获取本周数据
 const getWeekTime = async () => {
-  const res = await getUserWeekApi((info.username as string) || "zhangsan4");
+  loading.value = true;
+  const res = await getUserWeekApi(userDetail.value.username);
   if (res.code === 200) {
     option.value.series[0].data[0].value = res.data.map((item) => {
       return getMinute(item.totalTimeStamp) || 0;
@@ -42,7 +46,8 @@ const getWeekTime = async () => {
 };
 //获取当天数据
 const getTodayTime = async () => {
-  const res = await getUserTodayApi((info.username as string) || "zhangsan4");
+  loading.value = true;
+  const res = await getUserTodayApi(userDetail.value.username);
   if (res.code === 200) {
     dayOption.value.series[0].data = res.data.map(
       (item: { time: string | undefined }) => {
@@ -72,6 +77,22 @@ const option = ref({
       data: [
         {
           value: [] as number[],
+          label: {
+            //显示value中具体的数值
+            show: true,
+          },
+          emphasis: {
+            label: {
+              show: true,
+              color: "#fff",
+              fontSize: 32,
+              formatter: "{c}h", // 鼠标悬浮时展示数据加上单位
+              backgroundColor: "#0D1B42",
+              borderRadius: 5,
+              padding: 3,
+              shadowBlur: 3,
+            },
+          },
         },
       ],
     },
@@ -87,11 +108,9 @@ const dayOption = ref({
       type: "cross",
     },
   },
-  toolbox: {
-    show: true,
-    feature: {
-      saveAsImage: {},
-    },
+
+  grid: {
+    left: 50, // 调整这个属性
   },
   xAxis: {
     type: "category",
@@ -123,10 +142,31 @@ const dayOption = ref({
     },
   ],
 });
+watch(userDetail, () => {
+  getWeekTime();
+  getTodayTime();
+  getUserDetail();
+});
+type UserData = {
+  username: string;
+  time: string;
+  rank: number;
+};
+let userData: Ref<UserData> = ref({
+  username: "",
+  time: "00:00:00",
+  rank: 0,
+});
+const getUserDetail = async () => {
+  const res = await getWeekApi(userDetail.value.username);
+  console.log(res);
+  userData.value = res.data;
+};
 
 onMounted(() => {
   getWeekTime();
   getTodayTime();
+  getUserDetail();
 });
 </script>
 

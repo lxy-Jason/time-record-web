@@ -3,8 +3,9 @@
     <User
       v-for="(item, index) in userList"
       :key="index"
-      :index="index"
-      :info="item"
+      :index="index + 1"
+      :username="item.username"
+      :time="item.time"
     ></User>
   </div>
 </template>
@@ -12,10 +13,11 @@
 <script setup lang="ts">
 import User from "@/components/User.vue";
 import { getAllUserWeekApi } from "@/request/api";
+import { AllUserWeekResponseData } from "@/types";
 import { onMounted, ref } from "vue";
 
 const loading = ref(true);
-let userList = ref([]);
+const userList = ref<AllUserWeekResponseData[]>();
 //获取周排名
 const getWeekRank = async () => {
   const res = await getAllUserWeekApi();
