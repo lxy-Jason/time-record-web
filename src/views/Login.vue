@@ -31,7 +31,7 @@
           <el-row justify="space-between" class="mt-6 w-full">
             <button
               class="btn border-yellow-400 bg-white text-yellow-400 hover:bg-gray-300/50"
-              @click="login"
+              @click="register"
             >
               注册
             </button>
@@ -95,6 +95,16 @@ function login() {
     if (valid) {
       loading.value = true;
       await userInfoSore.actionLogin(loginInfo);
+      loading.value = false;
+    }
+  });
+}
+
+function register() {
+  userLoginFormRef.value?.validate(async (valid: boolean) => {
+    if (valid) {
+      loading.value = true;
+      await userInfoSore.actionRegister(loginInfo);
       loading.value = false;
     }
   });
