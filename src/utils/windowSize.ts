@@ -1,10 +1,11 @@
 import { useThrottleFn } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { useFold } from "@/store";
+import { useFold, useShowBack } from "@/store";
 
 export default () => {
   const router = useRouter();
   const fold = useFold();
+  const showBack = useShowBack();
   // 节流
   const deThrottleFn = useThrottleFn(() => {
     getWindowResize();
@@ -24,13 +25,14 @@ export default () => {
     }
     if (windowWidth < 768) {
       router.push({ path: "study" });
+      showBack.$patch({ showBack: true });
     } else {
       router.push({ path: "/" });
+      showBack.$patch({ showBack: false });
     }
   };
   const getWindowResize = function () {
     windowWidth = window.innerWidth;
-    console.log(windowWidth);
     size();
   };
   getWindowResize();
