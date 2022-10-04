@@ -39,7 +39,6 @@ import { timeUploadApi, getWeekApi } from "@/utils/request/api";
 import { Notify, Circle, Button, Dialog } from "vant";
 import "vant/es/notify/style";
 import { timeFormat } from "@/utils/timeFormat";
-import { timeDiff } from "@/utils/timeDiff";
 import { getTotalTime } from "@/utils/getTotalTime";
 
 let totalTime = ref("00:00:00");
@@ -51,7 +50,7 @@ let timer: any;
 let setTimer:any;
 
 //计时器(后期优化动画)
-const timeCount = async() => {
+const timeCount = () => {
   if (startFlag.value) {
     return;
   }
@@ -128,9 +127,6 @@ const saveTime = async () => {
 };
 // 获取当前时间与开始时间的差值
 const getTimeDiff = () => {
-  // let start = Number(localStorage.getItem("startTime")) || new Date().getTime();
-  // let end =
-  //   (Number(localStorage.getItem("studyTime")) || new Date().getTime()) + start;
   let studyTime = Number(localStorage.getItem("studyTime"));
   return getTotalTime(studyTime);
 };
@@ -157,15 +153,15 @@ const timeUpload = async (data: object) => {
   }
 };
 //页面可见时刷新页面
-const updatePage = () => {
-  document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState == "visible") {
-      // location.reload(true);
-      // instance.proxy.$forceUpdate();
-      curTime.value = getTimeDiff() || "00:00:00";
-    }
-  });
-};
+// const updatePage = () => {
+//   document.addEventListener("visibilitychange", function () {
+//     if (document.visibilityState == "visible") {
+//       // location.reload(true);
+//       // instance.proxy.$forceUpdate();
+//       curTime.value = getTimeDiff() || "00:00:00";
+//     }
+//   });
+// };
 //初始化
 const init = () => {
   getWeekTime();
@@ -207,7 +203,6 @@ let curTime = computed({
   flex-direction: column;
   align-items: center;
   height: calc(100vh - 50px);
-  /* --van-circle-text-font-size: 1.56rem; */
   position: relative;
 }
 .circleText {
