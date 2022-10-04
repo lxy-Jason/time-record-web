@@ -30,7 +30,6 @@
 
 <script setup lang="ts">
 import useUserInfo from "@/store/modules/useUserInfo";
-import { ElForm } from "element-plus";
 import { reactive, ref } from "vue";
 
 const loginRules = {
@@ -67,10 +66,10 @@ const loginInfo = reactive({
 
 const userInfoSore = useUserInfo();
 
-const userLoginFormRef = ref<InstanceType<typeof ElForm>>();
+const userLoginFormRef = ref();
 
 function login() {
-  userLoginFormRef.value?.validate((valid) => {
+  userLoginFormRef.value?.validate((valid: boolean) => {
     if (valid) userInfoSore.actionLogin(loginInfo);
   });
 }
