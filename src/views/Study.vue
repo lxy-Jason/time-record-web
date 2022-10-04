@@ -4,7 +4,7 @@
     <Circle size="19.5rem" layer-color="#ddd" class="circle">
       <div class="circleText">
         <p>本周学习时间</p>
-        <p style="text-align: center">{{ totalTime }}</p>
+        <p style="text-align:center" v-loading="loading">{{ totalTime }}</p>
       </div>
     </Circle>
     <div class="text">
@@ -35,11 +35,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { timeUploadApi, getWeekApi } from "@/utils/request/api";
+import { timeUploadApi, getWeekApi } from "@/request/api";
 import { Notify, Circle, Button, Dialog } from "vant";
-import "vant/es/notify/style";
-import { timeFormat } from "@/utils/timeFormat";
+//import "vant/es/notify/style";
+import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
+import useUserInfo from "@/store/modules/useUserInfo";
 
 let totalTime = ref("00:00:00");
 let seconds = ref(0);
@@ -48,6 +49,8 @@ let hours = ref(0);
 let startFlag = ref(true);
 let timer: any;
 let setTimer:any;
+let loading = ref(true);
+let userInfoStore = useUserInfo();
 
 //计时器(后期优化动画)
 const timeCount = () => {
@@ -108,16 +111,28 @@ const reset = () => {
 };
 //结束学习,保存时间
 const saveTime = async () => {
+  clearInterval(timer);
+  clearTimeout(setTimer);
+  let temppause = new Date().getTime();
+  let studyTime =
+    Number(localStorage.getItem("studyTime")) +
+    (temppause - Number(localStorage.getItem("lastPause")));
+  localStorage.setItem("studyTime", studyTime.toString());
+  localStorage.setItem("startFlag", "true");
+
+
   let startTime = Number(localStorage.getItem("startTime"));
   let timeStamp = Number(localStorage.getItem("studyTime"));
   let endTime = timeStamp + startTime;
+  let username = userInfoStore.username;
   let data = {
-    username: "zhangsan3",
+    username,
     time: getTimeDiff(),
     startTime,
     endTime,
     timeStamp,
   };
+  console.log(data)
   if (!hours.value && !minutes.value) {
     Notify({ type: "warning", message: "不足一分钟,不上传" });
   } else {
@@ -132,9 +147,11 @@ const getTimeDiff = () => {
 };
 //todo从后端获取当前已完成的时长
 const getWeekTime = async () => {
-  const res = await getWeekApi();
-  const { data } = res.data;
-  let temp = data.time.split(":");
+  loading.value = true;
+  const res = await getWeekApi(userInfoStore.username);
+  loading.value = false;
+  const { time } = res.data;
+  let temp = time.split(":");
   let second = Number(temp.pop());
   let minute = Number(temp.pop());
   let hour = Number(temp.pop());
@@ -142,8 +159,8 @@ const getWeekTime = async () => {
 };
 // 时间上传
 const timeUpload = async (data: object) => {
-  const { data: res } = await timeUploadApi(data);
-  // const { data } = res.data;
+  const res  = await timeUploadApi(data);
+  console.log(res)
   if (res.code === 200 && res.msg !== "error") {
     Notify({ type: "success", message: res.msg });
     // 上传成功后重新获取总时长
@@ -153,22 +170,22 @@ const timeUpload = async (data: object) => {
   }
 };
 //页面可见时刷新页面
-// const updatePage = () => {
-//   document.addEventListener("visibilitychange", function () {
-//     if (document.visibilityState == "visible") {
-//       // location.reload(true);
-//       // instance.proxy.$forceUpdate();
-//       curTime.value = getTimeDiff() || "00:00:00";
-//     }
-//   });
-// };
+const updatePage = () => {
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState == "visible") {
+      // location.reload(true);
+      // instance.proxy.$forceUpdate();
+      curTime.value = getTimeDiff() || "00:00:00";
+    }
+  });
+};
 //初始化
 const init = () => {
   getWeekTime();
   if (localStorage.getItem("startFlag") === "true") {
     curTime.value = getTimeDiff() || "00:00:00";
     timeCount();
-  } else {
+  } else if(localStorage.getItem("startFlag") === "false") {
     let nowTime = new Date().getTime();
     let studyTime =
       nowTime -
@@ -177,6 +194,8 @@ const init = () => {
     curTime.value = getTotalTime(studyTime);
     startFlag.value = false;
     timeCount();
+  } else{
+    curTime.value = "00:00:00";
   }
 };
 

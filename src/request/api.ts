@@ -19,3 +19,10 @@ export const getUserTodayApi = (username: string) =>
 //获取用户本周时长
 export const getWeekApi = (data: string) =>
   request.get(`time/getWeek?username=${data}`);
+
+//上传用户学习时长
+export const timeUploadApi = (data: object) =>
+  request.post("time/upload",{
+    data,
+    headers:{'Content-Type':"application/json,charset=UFT-8"}
+  });
