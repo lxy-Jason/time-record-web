@@ -1,5 +1,6 @@
 <template>
   <div class="h-full bg-white" v-loading="loading">
+    <h1 class="bg-blue-500 text-center text-lg">周榜</h1>
     <User
       v-for="(item, index) in userList"
       :key="index"

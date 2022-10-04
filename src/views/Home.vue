@@ -1,6 +1,7 @@
 <template>
   <div class="m-auto flex h-screen w-screen max-w-screen-xl justify-center">
     <div class="left">
+      <Setting></Setting>
       <Ranking></Ranking>
     </div>
     <div class="main">
@@ -11,6 +12,7 @@
       <transition>
         <div v-show="isShow" class="aside">
           <button class="unFold" @click="unfold">按钮</button>
+          <Setting></Setting>
           <Ranking></Ranking>
         </div>
       </transition>
@@ -24,6 +26,7 @@
 <script setup lang="ts">
 import Ranking from "@/views/Ranking.vue";
 import Detail from "@/views/Detail.vue";
+import Setting from "@/views/Setting.vue";
 import { ref } from "vue";
 import { useFold } from "@/store";
 import { storeToRefs } from "pinia";
@@ -44,7 +47,7 @@ const unfold = () => {
     min-width: 375px;
   }
   .main {
-    @apply w-full md:w-full lg:w-max-w-main  bg-blue-500 relative overflow-hidden;
+    @apply w-full md:w-full lg:w-max-w-main  border-b-gray-300 border-x-2 relative overflow-hidden;
     min-width: 375px;
   }
   .right {
