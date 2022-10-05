@@ -16,7 +16,7 @@ export default () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // let isFold = false;
   const size = () => {
-    if (windowWidth > 768 && windowWidth <= 1024) {
+    if (windowWidth > 768 && windowWidth <= 1125) {
       // isFold = true;
       fold.$patch({ fold: true });
     } else {

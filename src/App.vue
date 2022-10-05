@@ -1,6 +1,8 @@
 <template>
-  <router-view></router-view>
-  <Tabbar></Tabbar>
+  <div class="bg-gray-50">
+    <router-view></router-view>
+    <Tabbar></Tabbar>
+  </div>
 </template>
 
 <script setup lang="ts">

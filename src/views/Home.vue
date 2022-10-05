@@ -1,5 +1,7 @@
 <template>
-  <div class="m-auto flex h-screen w-screen max-w-screen-xl justify-center">
+  <div
+    class="m-auto flex h-screen w-screen max-w-screen-xl justify-center bg-white"
+  >
     <div class="left">
       <Setting></Setting>
       <Ranking></Ranking>

@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
-import { ref, watchEffect, Ref, onMounted, watch } from "vue";
+import { ref, watchEffect, Ref, onMounted } from "vue";
 import { getUserTodayApi, getUserWeekApi } from "@/request/api";
 import getMinute from "@/utils/getHour";
 import VChart from "vue-echarts";
@@ -33,20 +33,24 @@ const back2pank = () => {
   router.push({ path: "ranking" });
 };
 const loading = ref(true);
+let loadingWeek = ref(false);
+let loadingDay = ref(false);
 //获取本周数据
 const getWeekTime = async () => {
   loading.value = true;
+  loadingWeek.value = false;
   const res = await getUserWeekApi(userDetail.value.username);
   if (res.code === 200) {
     option.value.series[0].data[0].value = res.data.map((item) => {
       return getMinute(item.totalTimeStamp) || 0;
     });
   }
-  loading.value = false;
+  loadingWeek.value = true;
 };
 //获取当天数据
 const getTodayTime = async () => {
   loading.value = true;
+  loadingDay.value = false;
   const res = await getUserTodayApi(userDetail.value.username);
   if (res.code === 200) {
     dayOption.value.series[0].data = res.data.map(
@@ -55,6 +59,7 @@ const getTodayTime = async () => {
       }
     );
   }
+  loadingDay.value = true;
 };
 const option = ref({
   title: {
@@ -153,15 +158,15 @@ let userData: Ref<UserData> = ref({
   rank: 0,
 });
 watchEffect(() => {
-  // console.log(userDetail.value);
-  // console.log(userData.value.username);
   getWeekTime();
   getTodayTime();
   userData.value = userDetail.value;
 });
-// watch(userData.value.username, () => {
-
-// });
+watchEffect(() => {
+  if (loadingDay.value && loadingWeek.value) {
+    loading.value = false;
+  }
+});
 onMounted(() => {
   getWeekTime();
   getTodayTime();
