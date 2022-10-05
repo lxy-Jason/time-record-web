@@ -1,10 +1,10 @@
 <template>
-  <div class="study">
+  <div class="study" v-loading="loading">
     <!-- Study -->
     <Circle size="19.5rem" layer-color="#ddd" class="circle">
       <div class="circleText">
         <p>本周学习时间</p>
-        <p style="text-align: center" v-loading="loading">{{ totalTime }}</p>
+        <p style="text-align: center">{{ totalTime }}</p>
       </div>
     </Circle>
     <div class="text">
@@ -64,11 +64,11 @@ const timeCount = () => {
   }, (Math.ceil(studyTime / 1000) - studyTime / 1000) * 1000);
   timer = setInterval(() => {
     seconds.value++;
-    if (seconds.value >= 60) {
+    if (seconds.value > 59) {
       seconds.value = 0;
       minutes.value++;
     }
-    if (minutes.value >= 60) {
+    if (minutes.value > 59) {
       minutes.value = 0;
       hours.value++;
     }
@@ -130,11 +130,11 @@ const saveTime = async () => {
   let data = {
     username,
     time: getTimeDiff(),
-    startTime,
-    endTime,
-    timeStamp,
+    startTime:startTime.toString(),
+    endTime:endTime.toString(),
+    timeStamp:timeStamp.toString(),
   };
-  console.log(data);
+  //console.log(data);
   if (!hours.value && !minutes.value) {
     Notify({ type: "warning", message: "不足一分钟,不上传" });
   } else {
@@ -161,8 +161,8 @@ const getWeekTime = async () => {
 };
 // 时间上传
 const timeUpload = async (data: object) => {
-  const res = await timeUploadApi(data);
-  console.log(res);
+  const res:any = await timeUploadApi(data);
+  //console.log(res);
   if (res.code === 200 && res.msg !== "error") {
     Notify({ type: "success", message: res.msg });
     // 上传成功后重新获取总时长
