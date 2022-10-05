@@ -3,6 +3,9 @@ import { AllUserWeekResponse } from "@/types";
 
 //登录
 export const loginApi = (data: object) => request.post("user/login", data);
+//注册
+export const registerApi = (data: object) =>
+  request.post("user/register", data);
 //获取本周用户数据
 export const getUserWeekApi = (username: string) =>
   request.get<unknown, { code: number; data: { totalTimeStamp: number }[] }>(

@@ -1,5 +1,5 @@
 import { LoginInfo } from "@/types";
-import { loginApi } from "@/request/api";
+import { loginApi, registerApi } from "@/request/api";
 import { defineStore } from "pinia";
 import { RemovableRef, useLocalStorage } from "@vueuse/core";
 import router from "@/router";
@@ -17,6 +17,11 @@ const useUserInfo = defineStore("userInfo", {
   actions: {
     async actionLogin(loginInfo: LoginInfo) {
       const response = await loginApi(loginInfo);
+      this.username = response.data.username;
+      router.push("/home");
+    },
+    async actionRegister(loginInfo: LoginInfo) {
+      const response = await registerApi(loginInfo);
       this.username = response.data.username;
       router.push("/home");
     },
