@@ -4,7 +4,7 @@
     <Circle size="19.5rem" layer-color="#ddd" class="circle">
       <div class="circleText">
         <p>本周学习时间</p>
-        <p style="text-align:center" v-loading="loading">{{ totalTime }}</p>
+        <p style="text-align: center" v-loading="loading">{{ totalTime }}</p>
       </div>
     </Circle>
     <div class="text">
@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { timeUploadApi, getWeekApi } from "@/request/api";
-import { Notify, Circle, Button, Dialog } from "vant";
+import { Notify, Circle, Button } from "vant";
 //import "vant/es/notify/style";
 import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
@@ -48,7 +48,7 @@ let minutes = ref(0);
 let hours = ref(0);
 let startFlag = ref(true);
 let timer: any;
-let setTimer:any;
+let setTimer: any;
 let loading = ref(true);
 let userInfoStore = useUserInfo();
 
@@ -57,8 +57,11 @@ const timeCount = () => {
   if (startFlag.value) {
     return;
   }
-  let studyTime = Number(localStorage.getItem("studyTime"))
-  setTimer = setTimeout(()=>{seconds.value++;clearTimeout(setTimer)},(Math.ceil(studyTime/1000)-(studyTime/1000))*1000);
+  let studyTime = Number(localStorage.getItem("studyTime"));
+  setTimer = setTimeout(() => {
+    seconds.value++;
+    clearTimeout(setTimer);
+  }, (Math.ceil(studyTime / 1000) - studyTime / 1000) * 1000);
   timer = setInterval(() => {
     seconds.value++;
     if (seconds.value >= 60) {
@@ -120,7 +123,6 @@ const saveTime = async () => {
   localStorage.setItem("studyTime", studyTime.toString());
   localStorage.setItem("startFlag", "true");
 
-
   let startTime = Number(localStorage.getItem("startTime"));
   let timeStamp = Number(localStorage.getItem("studyTime"));
   let endTime = timeStamp + startTime;
@@ -132,7 +134,7 @@ const saveTime = async () => {
     endTime,
     timeStamp,
   };
-  console.log(data)
+  console.log(data);
   if (!hours.value && !minutes.value) {
     Notify({ type: "warning", message: "不足一分钟,不上传" });
   } else {
@@ -159,8 +161,8 @@ const getWeekTime = async () => {
 };
 // 时间上传
 const timeUpload = async (data: object) => {
-  const res  = await timeUploadApi(data);
-  console.log(res)
+  const res = await timeUploadApi(data);
+  console.log(res);
   if (res.code === 200 && res.msg !== "error") {
     Notify({ type: "success", message: res.msg });
     // 上传成功后重新获取总时长
@@ -185,7 +187,7 @@ const init = () => {
   if (localStorage.getItem("startFlag") === "true") {
     curTime.value = getTimeDiff() || "00:00:00";
     timeCount();
-  } else if(localStorage.getItem("startFlag") === "false") {
+  } else if (localStorage.getItem("startFlag") === "false") {
     let nowTime = new Date().getTime();
     let studyTime =
       nowTime -
@@ -194,7 +196,7 @@ const init = () => {
     curTime.value = getTotalTime(studyTime);
     startFlag.value = false;
     timeCount();
-  } else{
+  } else {
     curTime.value = "00:00:00";
   }
 };
