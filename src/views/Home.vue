@@ -5,10 +5,11 @@
       <Ranking></Ranking>
     </div>
     <div class="main">
+      <Study></Study>
       <transition name="btn">
         <button class="fold" v-if="fold" @click="unfold">按钮</button>
       </transition>
-
+      
       <transition>
         <div v-show="isShow" class="aside">
           <button class="unFold" @click="unfold">按钮</button>
@@ -16,6 +17,7 @@
           <Ranking></Ranking>
         </div>
       </transition>
+      
     </div>
     <div class="right">
       <Detail></Detail>
@@ -27,6 +29,7 @@
 import Ranking from "@/views/Ranking.vue";
 import Detail from "@/views/Detail.vue";
 import Setting from "@/views/Setting.vue";
+import Study from "@/views/Study.vue";
 import { ref } from "vue";
 import { useFold } from "@/store";
 import { storeToRefs } from "pinia";
