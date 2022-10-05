@@ -9,7 +9,7 @@
       <transition name="btn">
         <button class="fold" v-if="fold" @click="unfold">按钮</button>
       </transition>
-      
+
       <transition>
         <div v-show="isShow" class="aside">
           <button class="unFold" @click="unfold">按钮</button>
@@ -17,7 +17,6 @@
           <Ranking></Ranking>
         </div>
       </transition>
-      
     </div>
     <div class="right">
       <Detail></Detail>
@@ -50,7 +49,7 @@ const unfold = () => {
     min-width: 375px;
   }
   .main {
-    @apply w-full md:w-full lg:w-max-w-main  border-b-gray-300 border-x-2 relative overflow-hidden;
+    @apply w-full md:w-full lg:w-max-w-main  border-b-gray-300 border-x-2 relative overflow-hidden z-0;
     min-width: 375px;
   }
   .right {
@@ -58,7 +57,7 @@ const unfold = () => {
     min-width: 375px;
   }
   .aside {
-    @apply h-screen absolute;
+    @apply h-screen absolute z-50 top-0 border-b-gray-300 border-x-2;
     min-width: 375px;
     max-width: 375px;
   }

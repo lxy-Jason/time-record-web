@@ -16,8 +16,8 @@
 <script setup lang="ts">
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
-import { ref, onMounted, watch, Ref } from "vue";
-import { getUserTodayApi, getUserWeekApi, getWeekApi } from "@/request/api";
+import { ref, watchEffect, Ref, onMounted, watch } from "vue";
+import { getUserTodayApi, getUserWeekApi } from "@/request/api";
 import getMinute from "@/utils/getHour";
 import VChart from "vue-echarts";
 import "echarts";
@@ -142,11 +142,6 @@ const dayOption = ref({
     },
   ],
 });
-watch(userDetail, () => {
-  getWeekTime();
-  getTodayTime();
-  getUserDetail();
-});
 type UserData = {
   username: string;
   time: string;
@@ -157,16 +152,19 @@ let userData: Ref<UserData> = ref({
   time: "00:00:00",
   rank: 0,
 });
-const getUserDetail = async () => {
-  const res = await getWeekApi(userDetail.value.username);
-  console.log(res);
-  userData.value = res.data;
-};
+watchEffect(() => {
+  // console.log(userDetail.value);
+  // console.log(userData.value.username);
+  getWeekTime();
+  getTodayTime();
+  userData.value = userDetail.value;
+});
+// watch(userData.value.username, () => {
 
+// });
 onMounted(() => {
   getWeekTime();
   getTodayTime();
-  getUserDetail();
 });
 </script>
 

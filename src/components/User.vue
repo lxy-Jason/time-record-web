@@ -20,7 +20,6 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { reactive } from "vue";
 import { useShowBack, useUserDetail } from "@/store";
 import { storeToRefs } from "pinia";
 
@@ -45,12 +44,12 @@ const props = defineProps({
   },
 });
 
-const userData = reactive({
-  username: props.username,
-  time: props.time,
-  rank: props.index,
-});
 const jump2detail = () => {
+  const userData = {
+    username: props.username,
+    time: props.time,
+    rank: props.index,
+  };
   userDetail.$patch({ userDetail: userData });
   if (showBack.value) {
     router.push({ path: "detail" });
@@ -61,7 +60,7 @@ const jump2detail = () => {
 <style scoped>
 @tailwind components;
 .user {
-  @apply px-2 py-2 flex justify-start items-center border-b border-gray-300 mx-2;
+  @apply px-2 py-2 flex justify-start items-center border-b border-gray-300 mx-2 cursor-pointer;
 }
 .online {
   @apply w-2 h-2 bg-green-500 rounded-full  inline-block m-2;
