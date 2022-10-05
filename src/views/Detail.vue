@@ -1,5 +1,5 @@
 <template>
-  <div class="relative mx-1 p-2" v-loading="loading">
+  <div class="relative mx-1 bg-white p-2" v-loading="loading">
     <div class="back" v-if="showBack" @click="back2pank">
       <img src="@/assets/fanhui.svg" />
     </div>

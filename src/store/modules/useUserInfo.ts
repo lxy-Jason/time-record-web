@@ -2,7 +2,7 @@ import { LoginInfo } from "@/types";
 import { loginApi, registerApi } from "@/request/api";
 import { defineStore } from "pinia";
 import { RemovableRef, useLocalStorage } from "@vueuse/core";
-import router from "@/router";
+import windowSize from "@/utils/windowSize";
 
 interface UserInfo {
   username: string;
@@ -18,12 +18,12 @@ const useUserInfo = defineStore("userInfo", {
     async actionLogin(loginInfo: LoginInfo) {
       const response = await loginApi(loginInfo);
       this.username = response.data.username;
-      router.push("/home");
+      windowSize();
     },
     async actionRegister(loginInfo: LoginInfo) {
       const response = await registerApi(loginInfo);
       this.username = response.data.username;
-      router.push("/home");
+      windowSize();
     },
   },
 });

@@ -55,7 +55,7 @@ const unfold = () => {
     min-width: 375px;
   }
   .right {
-    @apply sm:min-w-max overflow-hidden hidden md:block;
+    @apply sm:min-w-max overflow-auto hidden md:block;
     min-width: 375px;
   }
   .aside {

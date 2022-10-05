@@ -130,9 +130,9 @@ const saveTime = async () => {
   let data = {
     username,
     time: getTimeDiff(),
-    startTime:startTime.toString(),
-    endTime:endTime.toString(),
-    timeStamp:timeStamp.toString(),
+    startTime: startTime.toString(),
+    endTime: endTime.toString(),
+    timeStamp: timeStamp.toString(),
   };
   //console.log(data);
   if (!hours.value && !minutes.value) {
@@ -161,7 +161,7 @@ const getWeekTime = async () => {
 };
 // 时间上传
 const timeUpload = async (data: object) => {
-  const res:any = await timeUploadApi(data);
+  const res: any = await timeUploadApi(data);
   //console.log(res);
   if (res.code === 200 && res.msg !== "error") {
     Notify({ type: "success", message: res.msg });
