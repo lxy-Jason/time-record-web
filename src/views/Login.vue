@@ -31,13 +31,13 @@
           <el-row justify="space-between" class="mt-6 w-full">
             <button
               class="btn border-yellow-400 bg-white text-yellow-400 hover:bg-gray-300/50"
-              @click="register"
+              @click.prevent="register"
             >
               注册
             </button>
             <button
               class="btn bg-blue-600/50 text-white hover:bg-blue-700"
-              @click="login"
+              @click.prevent="login"
             >
               登录
             </button>
