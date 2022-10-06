@@ -47,8 +47,8 @@ let seconds = ref(0);
 let minutes = ref(0);
 let hours = ref(0);
 let startFlag = ref(true);
-let timer: any;
-let setTimer: any;
+let timer: number;
+let setTimer: number;
 let loading = ref(true);
 let userInfoStore = useUserInfo();
 
@@ -58,11 +58,11 @@ const timeCount = () => {
     return;
   }
   let studyTime = Number(localStorage.getItem("studyTime"));
-  setTimer = setTimeout(() => {
+  setTimer = window.setTimeout(() => {
     seconds.value++;
     clearTimeout(setTimer);
   }, (Math.ceil(studyTime / 1000) - studyTime / 1000) * 1000);
-  timer = setInterval(() => {
+  timer = window.setInterval(() => {
     seconds.value++;
     if (seconds.value > 59) {
       seconds.value = 0;
@@ -161,14 +161,15 @@ const getWeekTime = async () => {
 };
 // 时间上传
 const timeUpload = async (data: object) => {
-  const res: any = await timeUploadApi(data);
+  loading.value = true;
+  const res = await timeUploadApi(data);
   //console.log(res);
-  if (res.code === 200 && res.msg !== "error") {
-    Notify({ type: "success", message: res.msg });
+  if (res.code === 200) {
+    Notify({ type: "success", message: "时间上传成功" });
     // 上传成功后重新获取总时长
     getWeekTime();
   } else {
-    Notify({ type: "warning", message: res.msg });
+    Notify({ type: "warning", message: "时间上传失败" });
   }
 };
 //页面可见时刷新页面
