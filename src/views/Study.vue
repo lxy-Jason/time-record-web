@@ -50,6 +50,7 @@ import { Notify, Circle, Button, Dialog } from "vant";
 import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
 import useUserInfo from "@/store/modules/useUserInfo";
+import { timeDiff } from "@/utils/timeDiff";
 
 let totalTime = ref("00:00:00");
 let seconds = ref(0);
@@ -211,7 +212,10 @@ const resetAnimation = () => {
 const updatePage = () => {
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState == "visible") {
-      curTime.value = getTimeDiff() || "00:00:00";
+      let start =
+        Number(localStorage.getItem("startTime")) || new Date().getTime();
+      let end = new Date().getTime();
+      curTime.value = timeDiff(start, end) || "00:00:00";
     }
   });
 };
@@ -244,6 +248,7 @@ onMounted(() => {
 let curTime = computed({
   get: () => timeFormat(hours.value, minutes.value, seconds.value),
   set: (val: string) => {
+    console.log(val);
     let temp = val.split(":");
     seconds.value = Number(temp.pop());
     minutes.value = Number(temp.pop());
