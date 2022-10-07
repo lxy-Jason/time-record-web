@@ -6,7 +6,7 @@
       layer-color="#ddd"
       class="circle"
       v-model:current-rate="currentRate"
-      :speed="speed"
+      speed="20"
       :rate="Rate"
       :color="gradientColor"
     >
@@ -63,7 +63,6 @@ let loading = ref(true);
 let userInfoStore = useUserInfo();
 let Rate = ref(0);
 let currentRate = ref(0);
-let speed = ref(0);
 const gradientColor = { "0%": "#3fecff", "100%": "#6149f6" };
 
 //计时器(后期优化动画)
@@ -90,7 +89,7 @@ const timeCount = () => {
 };
 //开始学习
 const startLearn = () => {
-  resetAnimation();
+  // resetAnimation();
   let startTime = new Date().getTime();
   startFlag.value = false;
   timeCount();
@@ -183,6 +182,8 @@ const getWeekTime = async () => {
   let second = Number(temp.pop());
   let minute = Number(temp.pop());
   let hour = Number(temp.pop());
+  //每次读取每周学习时间的时候都会自动触发动画
+  Rate.value = ((hour * 3600 + minute * 60 + second) / (20 * 3600)) * 100;
   totalTime.value = timeFormat(hour, minute, second);
 };
 // 时间上传
@@ -191,22 +192,10 @@ const timeUpload = async (data: object) => {
   if (res.code === 200 && res.msg !== "error") {
     Notify({ type: "success", message: "时间上传成功" });
     // 上传成功后重新获取总时长
-    getWeekTime().then(() => {
-      uploadAnimation();
-    });
+    getWeekTime();
   } else {
     Notify({ type: "warning", message: "时间上传失败" });
   }
-};
-//圆圈上传动画
-const uploadAnimation = () => {
-  speed.value = 50;
-  Rate.value = 100;
-};
-//计时开始的时候圆圈动画归零
-const resetAnimation = () => {
-  speed.value = 80;
-  Rate.value = 0;
 };
 //页面可见时刷新页面
 const updatePage = () => {
@@ -248,7 +237,6 @@ onMounted(() => {
 let curTime = computed({
   get: () => timeFormat(hours.value, minutes.value, seconds.value),
   set: (val: string) => {
-    console.log(val);
     let temp = val.split(":");
     seconds.value = Number(temp.pop());
     minutes.value = Number(temp.pop());
