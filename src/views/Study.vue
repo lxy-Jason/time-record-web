@@ -56,8 +56,8 @@ let seconds = ref(0);
 let minutes = ref(0);
 let hours = ref(0);
 let startFlag = ref(true);
-let timer: any;
-let setTimer: any;
+let timer: number;
+let setTimer: number;
 let loading = ref(true);
 let userInfoStore = useUserInfo();
 let Rate = ref(0);
@@ -71,11 +71,11 @@ const timeCount = () => {
     return;
   }
   let studyTime = Number(localStorage.getItem("studyTime"));
-  setTimer = setTimeout(() => {
+  setTimer = window.setTimeout(() => {
     seconds.value++;
     clearTimeout(setTimer);
   }, (Math.ceil(studyTime / 1000) - studyTime / 1000) * 1000);
-  timer = setInterval(() => {
+  timer = window.setInterval(() => {
     seconds.value++;
     if (seconds.value > 59) {
       seconds.value = 0;
@@ -194,7 +194,7 @@ const timeUpload = async (data: object) => {
       uploadAnimation();
     });
   } else {
-    Notify({ type: "warning", message: res.msg });
+    Notify({ type: "warning", message: "时间上传失败" });
   }
 };
 //圆圈上传动画

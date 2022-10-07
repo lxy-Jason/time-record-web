@@ -32,8 +32,13 @@ const getUserDetail = async () => {
   const res = await getWeekApi(userInfo.username);
   userData.value = res.data;
   loading.value = false;
-  console.log(userInfo.username);
-  userDetail.$patch({ userDetail: userData.value });
+  userDetail.$patch({
+    userDetail: {
+      username: userData.value.username,
+      time: userData.value.time,
+      rank: userData.value.rank,
+    },
+  });
 };
 
 onMounted(() => {
