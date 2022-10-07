@@ -1,5 +1,5 @@
 <template>
-  <div class="study" v-loading="loading">
+  <div class="study bg-white" v-loading="loading">
     <!-- Study -->
     <Circle
       size="19.5rem"
@@ -188,7 +188,7 @@ const getWeekTime = async () => {
 const timeUpload = async (data: object) => {
   const res: any = await timeUploadApi(data);
   if (res.code === 200 && res.msg !== "error") {
-    Notify({ type: "success", message: res.msg });
+    Notify({ type: "success", message: "时间上传成功" });
     // 上传成功后重新获取总时长
     getWeekTime().then(() => {
       uploadAnimation();
@@ -206,7 +206,6 @@ const uploadAnimation = () => {
 const resetAnimation = () => {
   speed.value = 80;
   Rate.value = 0;
-
 };
 //页面可见时刷新页面
 const updatePage = () => {
