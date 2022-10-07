@@ -1,5 +1,6 @@
 <template>
-  <div v-loading="loading" class="bg-white">
+  <div v-loading="loading" class="relative bg-white">
+    <LogoutVue></LogoutVue>
     <User
       :username="userData.username"
       :time="userData.time"
@@ -14,6 +15,7 @@ import { getWeekApi } from "@/request/api";
 import useUserInfo from "@/store/modules/useUserInfo";
 import { Ref, ref, onMounted } from "vue";
 import { useUserDetail } from "@/store";
+import LogoutVue from "@/components/Logout.vue";
 
 const userDetail = useUserDetail();
 const userInfo = useUserInfo();

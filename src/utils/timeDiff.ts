@@ -1,7 +1,6 @@
-import {getTotalTime} from './getTotalTime'
+import { getTotalTime } from "./getTotalTime";
 
-export const timeDiff = (start:number, end:number) => {
-  let diff = end - start
-  return getTotalTime(diff)
-}
-
+export const timeDiff = (start: number, end: number) => {
+  const diff = end - start;
+  return getTotalTime(diff);
+};
