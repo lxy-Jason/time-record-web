@@ -1,12 +1,12 @@
 <template>
-  <div class="study bg-white" v-loading="loading">
+  <div class="study" v-loading="loading">
     <!-- Study -->
     <Circle
       size="19.5rem"
       layer-color="#ddd"
       class="circle"
       v-model:current-rate="currentRate"
-      :speed="speed"
+      speed="20"
       :rate="Rate"
       :color="gradientColor"
     >
@@ -50,7 +50,6 @@ import { Notify, Circle, Button, Dialog } from "vant";
 import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
 import useUserInfo from "@/store/modules/useUserInfo";
-import { timeDiff } from "@/utils/timeDiff";
 
 let totalTime = ref("00:00:00");
 let seconds = ref(0);
@@ -63,7 +62,6 @@ let loading = ref(true);
 let userInfoStore = useUserInfo();
 let Rate = ref(0);
 let currentRate = ref(0);
-let speed = ref(0);
 const gradientColor = { "0%": "#3fecff", "100%": "#6149f6" };
 
 //计时器(后期优化动画)
@@ -90,7 +88,7 @@ const timeCount = () => {
 };
 //开始学习
 const startLearn = () => {
-  resetAnimation();
+  // resetAnimation();
   let startTime = new Date().getTime();
   startFlag.value = false;
   timeCount();
@@ -183,39 +181,26 @@ const getWeekTime = async () => {
   let second = Number(temp.pop());
   let minute = Number(temp.pop());
   let hour = Number(temp.pop());
+  //每次读取每周学习时间的时候都会自动触发动画
+  Rate.value = ((hour * 3600 + minute * 60 + second) / (20 * 3600)) * 100;
   totalTime.value = timeFormat(hour, minute, second);
 };
 // 时间上传
 const timeUpload = async (data: object) => {
   const res: any = await timeUploadApi(data);
   if (res.code === 200 && res.msg !== "error") {
-    Notify({ type: "success", message: "时间上传成功" });
+    Notify({ type: "success", message: res.msg });
     // 上传成功后重新获取总时长
-    getWeekTime().then(() => {
-      uploadAnimation();
-    });
+    getWeekTime();
   } else {
     Notify({ type: "warning", message: "时间上传失败" });
   }
-};
-//圆圈上传动画
-const uploadAnimation = () => {
-  speed.value = 50;
-  Rate.value = 100;
-};
-//计时开始的时候圆圈动画归零
-const resetAnimation = () => {
-  speed.value = 80;
-  Rate.value = 0;
 };
 //页面可见时刷新页面
 const updatePage = () => {
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState == "visible") {
-      let start =
-        Number(localStorage.getItem("startTime")) || new Date().getTime();
-      let end = new Date().getTime();
-      curTime.value = timeDiff(start, end) || "00:00:00";
+      curTime.value = getTimeDiff() || "00:00:00";
     }
   });
 };
@@ -248,7 +233,6 @@ onMounted(() => {
 let curTime = computed({
   get: () => timeFormat(hours.value, minutes.value, seconds.value),
   set: (val: string) => {
-    console.log(val);
     let temp = val.split(":");
     seconds.value = Number(temp.pop());
     minutes.value = Number(temp.pop());
