@@ -206,7 +206,6 @@ const uploadAnimation = () => {
 const resetAnimation = () => {
   speed.value = 80;
   Rate.value = 0;
-
 };
 //页面可见时刷新页面
 const updatePage = () => {
