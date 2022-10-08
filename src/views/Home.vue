@@ -9,12 +9,21 @@
     <div class="main">
       <Study></Study>
       <transition name="btn">
-        <button class="fold" v-if="fold" @click="unfold">按钮</button>
+        <button class="fold btn" v-if="fold" @click="unfold">
+          <div class="relative h-6 w-6">
+            <img class="arrow" src="@/assets/youjiantou.svg" />
+          </div>
+        </button>
       </transition>
 
       <transition>
         <div v-show="isShow" class="aside">
-          <button class="unFold" @click="unfold">按钮</button>
+          <button class="unFold btn" @click="unfold">
+            <div class="relative h-6 w-6">
+              <img class="arrow unFold" src="@/assets/fanhui.svg" />
+            </div>
+          </button>
+
           <Setting></Setting>
           <Ranking></Ranking>
         </div>
@@ -63,11 +72,22 @@ const unfold = () => {
     min-width: 375px;
     max-width: 375px;
   }
+  .btn {
+    @apply absolute  top-1/2  w-6 h-16 bg-gray-50 transform -translate-y-2/4 z-10;
+    width: 10px;
+    height: 100px;
+    border-left: 20px solid #ccc;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+  }
   .fold {
-    @apply absolute left-0 top-1/2 z-0;
+    @apply left-0  z-0;
   }
   .unFold {
-    @apply absolute -right-8 top-1/2 z-10;
+    @apply -right-5  z-10;
+  }
+  .arrow {
+    @apply w-6 h-6  absolute -left-6 top-1/2 z-10 transform -translate-y-2/4;
   }
 }
 .v-enter-to,

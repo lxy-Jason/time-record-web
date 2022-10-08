@@ -1,7 +1,15 @@
 <template>
-  <div class="study" v-loading="loading">
+  <div class="study bg-white" v-loading="loading">
     <!-- Study -->
-    <Circle size="19.5rem" layer-color="#ddd" class="circle">
+    <Circle
+      size="19.5rem"
+      layer-color="#ddd"
+      class="circle"
+      v-model:current-rate="currentRate"
+      speed="20"
+      :rate="Rate"
+      :color="gradientColor"
+    >
       <div class="circleText">
         <p>本周学习时间</p>
         <p style="text-align: center">{{ totalTime }}</p>
@@ -12,13 +20,13 @@
       <p style="text-align: center">{{ curTime }}</p>
     </div>
     <div class="button">
+      <!-- <Button v-if="startFlag">开始学习</Button> -->
       <Button
         v-if="startFlag"
-        plain
         @click="startLearn"
         type="primary"
         color="#246EEA"
-        >开始</Button
+        >开始学习</Button
       >
       <Button
         v-if="!startFlag"
@@ -28,7 +36,9 @@
         color="#EA1E10"
         >暂停</Button
       >
-      <Button type="primary" color="#FF8258" @click="saveTime">结束</Button>
+      <Button v-if="!startFlag" type="primary" color="#FF8258" @click="saveTime"
+        >结束</Button
+      >
     </div>
   </div>
 </template>
@@ -36,21 +46,24 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { timeUploadApi, getWeekApi } from "@/request/api";
-import { Notify, Circle, Button } from "vant";
-//import "vant/es/notify/style";
+import { Notify, Circle, Button, Dialog } from "vant";
 import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
 import useUserInfo from "@/store/modules/useUserInfo";
+import { timeDiff } from "@/utils/timeDiff";
 
 let totalTime = ref("00:00:00");
 let seconds = ref(0);
 let minutes = ref(0);
 let hours = ref(0);
 let startFlag = ref(true);
-let timer: any;
-let setTimer: any;
+let timer: number;
+let setTimer: number;
 let loading = ref(true);
 let userInfoStore = useUserInfo();
+let Rate = ref(0);
+let currentRate = ref(0);
+const gradientColor = { "0%": "#3fecff", "100%": "#6149f6" };
 
 //计时器(后期优化动画)
 const timeCount = () => {
@@ -58,11 +71,11 @@ const timeCount = () => {
     return;
   }
   let studyTime = Number(localStorage.getItem("studyTime"));
-  setTimer = setTimeout(() => {
+  setTimer = window.setTimeout(() => {
     seconds.value++;
     clearTimeout(setTimer);
   }, (Math.ceil(studyTime / 1000) - studyTime / 1000) * 1000);
-  timer = setInterval(() => {
+  timer = window.setInterval(() => {
     seconds.value++;
     if (seconds.value > 59) {
       seconds.value = 0;
@@ -76,6 +89,7 @@ const timeCount = () => {
 };
 //开始学习
 const startLearn = () => {
+  // resetAnimation();
   let startTime = new Date().getTime();
   startFlag.value = false;
   timeCount();
@@ -112,8 +126,8 @@ const reset = () => {
   localStorage.removeItem("studyTime");
   localStorage.removeItem("lastPause");
 };
-//结束学习,保存时间
-const saveTime = async () => {
+//结束计时逻辑
+const finishTime = () => {
   clearInterval(timer);
   clearTimeout(setTimer);
   let temppause = new Date().getTime();
@@ -122,7 +136,6 @@ const saveTime = async () => {
     (temppause - Number(localStorage.getItem("lastPause")));
   localStorage.setItem("studyTime", studyTime.toString());
   localStorage.setItem("startFlag", "true");
-
   let startTime = Number(localStorage.getItem("startTime"));
   let timeStamp = Number(localStorage.getItem("studyTime"));
   let endTime = timeStamp + startTime;
@@ -134,13 +147,25 @@ const saveTime = async () => {
     endTime: endTime.toString(),
     timeStamp: timeStamp.toString(),
   };
-  //console.log(data);
   if (!hours.value && !minutes.value) {
     Notify({ type: "warning", message: "不足一分钟,不上传" });
   } else {
     timeUpload(data);
   }
-  reset();
+};
+//结束学习,保存时间
+const saveTime = () => {
+  Dialog.confirm({
+    title: "标题",
+    message: "是否上传本次学习时间?",
+  })
+    .then(() => {
+      finishTime();
+      reset();
+    })
+    .catch(() => {
+      reset();
+    });
 };
 // 获取当前时间与开始时间的差值
 const getTimeDiff = () => {
@@ -157,27 +182,29 @@ const getWeekTime = async () => {
   let second = Number(temp.pop());
   let minute = Number(temp.pop());
   let hour = Number(temp.pop());
+  //每次读取每周学习时间的时候都会自动触发动画
+  Rate.value = ((hour * 3600 + minute * 60 + second) / (20 * 3600)) * 100;
   totalTime.value = timeFormat(hour, minute, second);
 };
 // 时间上传
 const timeUpload = async (data: object) => {
   const res: any = await timeUploadApi(data);
-  //console.log(res);
   if (res.code === 200 && res.msg !== "error") {
-    Notify({ type: "success", message: res.msg });
+    Notify({ type: "success", message: "时间上传成功" });
     // 上传成功后重新获取总时长
     getWeekTime();
   } else {
-    Notify({ type: "warning", message: res.msg });
+    Notify({ type: "warning", message: "时间上传失败" });
   }
 };
 //页面可见时刷新页面
 const updatePage = () => {
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState == "visible") {
-      // location.reload(true);
-      // instance.proxy.$forceUpdate();
-      curTime.value = getTimeDiff() || "00:00:00";
+      let start =
+        Number(localStorage.getItem("startTime")) || new Date().getTime();
+      let end = new Date().getTime();
+      curTime.value = timeDiff(start, end) || "00:00:00";
     }
   });
 };
@@ -203,6 +230,7 @@ const init = () => {
 
 onMounted(() => {
   init();
+  updatePage();
 });
 
 //当前学习时长
@@ -223,8 +251,8 @@ let curTime = computed({
   justify-content: space-evenly;
   flex-direction: column;
   align-items: center;
-  height: calc(100vh - 50px);
   position: relative;
+  margin: 50px auto 0 auto;
 }
 .circleText {
   font-weight: 500;
