@@ -67,13 +67,13 @@ const option = ref({
   },
   radar: {
     indicator: [
-      { name: "周一", max: 5 },
-      { name: "周二", max: 5 },
-      { name: "周三", max: 5 },
-      { name: "周四", max: 5 },
-      { name: "周五", max: 5 },
-      { name: "周六", max: 5 },
-      { name: "周日", max: 5 },
+      { name: "周一" },
+      { name: "周二" },
+      { name: "周三" },
+      { name: "周四" },
+      { name: "周五" },
+      { name: "周六" },
+      { name: "周日" },
     ],
   },
   series: [
