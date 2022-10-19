@@ -51,6 +51,7 @@ import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
 import useUserInfo from "@/store/modules/useUserInfo";
 import { timeDiff } from "@/utils/timeDiff";
+import { log } from "console";
 
 let totalTime = ref("00:00:00");
 let seconds = ref(0);
@@ -126,6 +127,7 @@ const reset = () => {
   localStorage.removeItem("studyTime");
   localStorage.removeItem("lastPause");
 };
+const username = localStorage.getItem("username") || "Jason";
 //结束计时逻辑
 const finishTime = () => {
   clearInterval(timer);
@@ -139,13 +141,12 @@ const finishTime = () => {
   let startTime = Number(localStorage.getItem("startTime"));
   let timeStamp = Number(localStorage.getItem("studyTime"));
   let endTime = timeStamp + startTime;
-  let username = userInfoStore.username;
   let data = {
     username,
     time: getTimeDiff(),
-    startTime: startTime.toString(),
-    endTime: endTime.toString(),
-    timeStamp: timeStamp.toString(),
+    startTime: startTime,
+    endTime: endTime,
+    timeStamp: timeStamp,
   };
   if (!hours.value && !minutes.value) {
     Notify({ type: "warning", message: "不足一分钟,不上传" });
@@ -175,9 +176,10 @@ const getTimeDiff = () => {
 //todo从后端获取当前已完成的时长
 const getWeekTime = async () => {
   loading.value = true;
-  const res = await getWeekApi(userInfoStore.username);
+  const res = await getWeekApi(username);
+  console.log(res);
   loading.value = false;
-  const { time } = res.data;
+  const { time } = res;
   let temp = time.split(":");
   let second = Number(temp.pop());
   let minute = Number(temp.pop());
@@ -189,7 +191,8 @@ const getWeekTime = async () => {
 // 时间上传
 const timeUpload = async (data: object) => {
   const res: any = await timeUploadApi(data);
-  if (res.code === 200 && res.msg !== "error") {
+  console.log(res);
+  if (res.code === 200) {
     Notify({ type: "success", message: "时间上传成功" });
     // 上传成功后重新获取总时长
     getWeekTime();

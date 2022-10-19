@@ -5,7 +5,7 @@
       v-for="(item, index) in userList"
       :key="index"
       :index="index + 1"
-      :username="item.username"
+      :username="item._id"
       :time="item.time"
     ></User>
   </div>
@@ -14,17 +14,23 @@
 <script setup lang="ts">
 import User from "@/components/User.vue";
 import { getAllUserWeekApi } from "@/request/api";
-import { AllUserWeekResponseData } from "@/types";
 import { onMounted, ref } from "vue";
+import { getTotalTime } from "@/utils/getTotalTime";
 
 const loading = ref(true);
-const userList = ref<AllUserWeekResponseData[]>();
+const userList = ref();
 //获取周排名
 const getWeekRank = async () => {
   const res = await getAllUserWeekApi();
+  console.log(res);
   if (res.code === 200) {
     // console.log(res.data);
-    userList.value = res.data;
+    res.usersArr.forEach(
+      (item: { [x: string]: unknown; totalWeekTime: number }) => {
+        item["time"] = getTotalTime(item.totalWeekTime);
+      }
+    );
+    userList.value = res.usersArr;
   }
   loading.value = false;
 };

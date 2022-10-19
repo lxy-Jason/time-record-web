@@ -18,7 +18,7 @@ import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
 import { ref, watchEffect, Ref, onMounted } from "vue";
 import { getUserTodayApi, getUserWeekApi } from "@/request/api";
-import getMinute from "@/utils/getHour";
+import getHour from "@/utils/getHour";
 import VChart from "vue-echarts";
 import "echarts";
 import { useShowBack, useUserDetail } from "@/store";
@@ -42,11 +42,16 @@ const getWeekTime = async () => {
   const res = await getUserWeekApi(userDetail.value.username);
   if (res.code === 200) {
     option.value.series[0].data[0].value = res.data.map((item) => {
-      return getMinute(item.totalTimeStamp) || 0;
+      let temp = getHour(item.totalTimeStamp);
+      if (temp > maxValue.value) {
+        maxValue.value = temp;
+      }
+      return getHour(item.totalTimeStamp) || 0;
     });
   }
   loadingWeek.value = true;
 };
+const maxValue = ref(0);
 //获取当天数据
 const getTodayTime = async () => {
   loading.value = true;
@@ -67,13 +72,13 @@ const option = ref({
   },
   radar: {
     indicator: [
-      { name: "周一" },
-      { name: "周二" },
-      { name: "周三" },
-      { name: "周四" },
-      { name: "周五" },
-      { name: "周六" },
-      { name: "周日" },
+      { name: "周一", max: 10 },
+      { name: "周二", max: 10 },
+      { name: "周三", max: 10 },
+      { name: "周四", max: 10 },
+      { name: "周五", max: 10 },
+      { name: "周六", max: 10 },
+      { name: "周日", max: 10 },
     ],
   },
   series: [

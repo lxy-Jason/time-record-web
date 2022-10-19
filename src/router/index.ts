@@ -18,11 +18,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/views/Login.vue"),
   },
   {
-    path: "/register",
-    name: "Register",
-    component: () => import("@/views/Register.vue"),
-  },
-  {
     path: "/ranking",
     name: "Ranking",
     component: () => import("@/views/Ranking.vue"),
@@ -49,16 +44,15 @@ const router = createRouter({
   history: createWebHashHistory(),
 });
 
-const userInfo = useUserInfo(pinia);
-
-router.beforeEach((to) => {
-  if (to.path !== "/login") {
-    if (!userInfo.username) {
-      return "/login";
-    }
-  }
-  if (to.path === "/login" && userInfo.username) {
-    return "/";
+router.beforeEach((to, from) => {
+  const isAuthenticated = localStorage.getItem("token");
+  if (
+    // 检查用户是否已登录
+    !isAuthenticated &&
+    to.name !== "Login"
+  ) {
+    // 将用户重定向到登录页面
+    return { name: "Login" };
   }
 });
 

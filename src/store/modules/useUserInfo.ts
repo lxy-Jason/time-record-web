@@ -17,12 +17,13 @@ const useUserInfo = defineStore("userInfo", {
   actions: {
     async actionLogin(loginInfo: LoginInfo) {
       const response = await loginApi(loginInfo);
-      this.username = response.data.username;
+      console.log(response);
+      this.username = response.username;
       windowSize();
     },
     async actionRegister(loginInfo: LoginInfo) {
       const response = await registerApi(loginInfo);
-      this.username = response.data.username;
+      this.username = response.username;
       windowSize();
     },
   },
