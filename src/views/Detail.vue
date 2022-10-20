@@ -1,5 +1,5 @@
 <template>
-  <div class="relative mx-1 bg-white p-2" v-loading="loading">
+  <div class="relative mx-1 bg-white p-2">
     <div class="back" v-if="showBack" @click="back2pank">
       <img src="@/assets/fanhui.svg" />
     </div>
@@ -17,7 +17,7 @@
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
 import { ref, watchEffect, Ref, onMounted } from "vue";
-import { getUserTodayApi, getUserWeekApi } from "@/request/api";
+import { getUserTodayApi, getUserEverydayTimeApi } from "@/request/api";
 import getHour from "@/utils/getHour";
 import VChart from "vue-echarts";
 import "echarts";
@@ -39,23 +39,26 @@ let loadingDay = ref(false);
 const getWeekTime = async () => {
   loading.value = true;
   loadingWeek.value = false;
-  const res = await getUserWeekApi(userDetail.value.username);
+  const res = await getUserEverydayTimeApi(userDetail.value.username);
   if (res.code === 200) {
-    option.value.series[0].data[0].value = res.data.map((item) => {
-      let temp = getHour(item.totalTimeStamp);
-      if (temp > maxValue.value) {
-        maxValue.value = temp;
-      }
-      return getHour(item.totalTimeStamp) || 0;
-    });
+    console.log(res);
+    if (res.data instanceof Array) {
+      option.value.series[0].data[0].value = res.data.map((item: number) => {
+        let temp = getHour(item);
+        if (temp > maxValue.value) {
+          maxValue.value = temp;
+        }
+        return getHour(item) || 0;
+      });
+    }
   }
   loadingWeek.value = true;
 };
 const maxValue = ref(0);
 //获取当天数据
 const getTodayTime = async () => {
-  loading.value = true;
-  loadingDay.value = false;
+  // loading.value = true;
+  // loadingDay.value = false;
   const res = await getUserTodayApi(userDetail.value.username);
   if (res.code === 200) {
     dayOption.value.series[0].data = res.data.map(
@@ -72,13 +75,13 @@ const option = ref({
   },
   radar: {
     indicator: [
-      { name: "周一", max: 10 },
-      { name: "周二", max: 10 },
-      { name: "周三", max: 10 },
-      { name: "周四", max: 10 },
-      { name: "周五", max: 10 },
-      { name: "周六", max: 10 },
-      { name: "周日", max: 10 },
+      { name: "周一" },
+      { name: "周二" },
+      { name: "周三" },
+      { name: "周四" },
+      { name: "周五" },
+      { name: "周六" },
+      { name: "周日" },
     ],
   },
   series: [
@@ -164,17 +167,18 @@ let userData: Ref<UserData> = ref({
 });
 watchEffect(() => {
   getWeekTime();
-  getTodayTime();
+  // getTodayTime();
   userData.value = userDetail.value;
 });
-watchEffect(() => {
-  if (loadingDay.value && loadingWeek.value) {
-    loading.value = false;
-  }
-});
+// watchEffect(() => {
+//   if (loadingDay.value && loadingWeek.value) {
+//     loading.value = false;
+//   }
+// });
+loading.value = false;
 onMounted(() => {
   getWeekTime();
-  getTodayTime();
+  // getTodayTime();
 });
 </script>
 

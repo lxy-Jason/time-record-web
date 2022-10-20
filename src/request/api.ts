@@ -7,14 +7,18 @@ export const loginApi = (data: object) =>
 //注册
 export const registerApi = (data: object) =>
   request.post("users/register", data);
-//获取本周用户数据
-export const getUserWeekApi = (username: string) =>
-  request.get(`time/getUserWeek?username=${username}`);
+
+//获取用户本周时长分布
+export const getUserEverydayTimeApi = (username: string) =>
+  request.get(`time/getUserEverydayTime?username=${username}`);
+
 //获取所有用户本周学习总时长
 export const getAllUserWeekTime = () => request.get("time/getAllUserWeekTime");
+
 //获取所有用户本月学习时间
 export const getAllUserMonthTime = () =>
   request.get("/time/getAllUserMonthTime");
+
 //获取所有用户总时长
 export const getAllUserTotalTime = () => request.get("/time/getTotalTime");
 //获取用户当天数据
@@ -25,7 +29,7 @@ interface UserData {
   time: string;
   rank: number;
 }
-//获取用户本周时长
+//获取用户总本周时长
 export const getWeekApi = (data: string) =>
   request.get<UserData>(`time/getWeek?username=${data}`);
 
