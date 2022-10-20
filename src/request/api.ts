@@ -1,5 +1,5 @@
 import request from "./index";
-import { AllUserWeekResponse, loginRes } from "@/types";
+import { loginRes } from "@/types";
 
 //登录
 export const loginApi = (data: object) =>
@@ -11,8 +11,12 @@ export const registerApi = (data: object) =>
 export const getUserWeekApi = (username: string) =>
   request.get(`time/getUserWeek?username=${username}`);
 //获取所有用户本周学习总时长
-export const getAllUserWeekApi = () => request.get("time/getAllUserWeekTime");
-
+export const getAllUserWeekTime = () => request.get("time/getAllUserWeekTime");
+//获取所有用户本月学习时间
+export const getAllUserMonthTime = () =>
+  request.get("/time/getAllUserMonthTime");
+//获取所有用户总时长
+export const getAllUserTotalTime = () => request.get("/time/getTotalTime");
 //获取用户当天数据
 export const getUserTodayApi = (username: string) =>
   request.get(`time/getUserTodayInterval?username=${username}`);

@@ -58,6 +58,7 @@ const unfold = () => {
   .left {
     @apply overflow-hidden lg:min-w-max hidden lg:block;
     min-width: 375px;
+    max-width: 375px;
   }
   .main {
     @apply w-full md:w-full lg:w-max-w-main  border-b-gray-300 border-x-2 relative overflow-hidden z-0;

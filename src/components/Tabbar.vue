@@ -28,4 +28,8 @@ watchEffect(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+:root {
+  --van-tabbar-z-index: 0;
+}
+</style>
