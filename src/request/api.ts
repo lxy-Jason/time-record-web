@@ -4,6 +4,7 @@ import { loginRes } from "@/types";
 //登录
 export const loginApi = (data: object) =>
   request.post<loginRes>("users/login", data);
+
 //注册
 export const registerApi = (data: object) =>
   request.post("users/register", data);
@@ -21,9 +22,11 @@ export const getAllUserMonthTime = () =>
 
 //获取所有用户总时长
 export const getAllUserTotalTime = () => request.get("/time/getTotalTime");
-//获取用户当天数据
-export const getUserTodayApi = (username: string) =>
-  request.get(`time/getUserTodayInterval?username=${username}`);
+
+//获取用户当天时长分布
+export const getUserTodayTimeApi = (username: string) =>
+  request.get(`time/getUserTodayTime?username=${username}`);
+
 interface UserData {
   username: string;
   time: string;

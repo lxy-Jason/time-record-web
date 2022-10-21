@@ -17,7 +17,7 @@
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
 import { ref, watchEffect, Ref, onMounted } from "vue";
-import { getUserTodayApi, getUserEverydayTimeApi } from "@/request/api";
+import { getUserTodayTimeApi, getUserEverydayTimeApi } from "@/request/api";
 import getHour from "@/utils/getHour";
 import VChart from "vue-echarts";
 import "echarts";
@@ -40,8 +40,9 @@ const getWeekTime = async () => {
   loading.value = true;
   loadingWeek.value = false;
   const res = await getUserEverydayTimeApi(userDetail.value.username);
+  console.log(res);
+
   if (res.code === 200) {
-    console.log(res);
     if (res.data instanceof Array) {
       option.value.series[0].data[0].value = res.data.map((item: number) => {
         let temp = getHour(item);
@@ -59,13 +60,14 @@ const maxValue = ref(0);
 const getTodayTime = async () => {
   // loading.value = true;
   // loadingDay.value = false;
-  const res = await getUserTodayApi(userDetail.value.username);
+  const res = await getUserTodayTimeApi(userDetail.value.username);
   if (res.code === 200) {
-    dayOption.value.series[0].data = res.data.map(
-      (item: { time: string | undefined }) => {
-        return Number(item.time || 0);
-      }
-    );
+    console.log(res);
+    if (Array.isArray(res.data)) {
+      dayOption.value.series[0].data = res.data.map((item) => {
+        return Math.floor(item / 60 / 1000);
+      });
+    }
   }
   loadingDay.value = true;
 };
@@ -146,7 +148,7 @@ const dayOption = ref({
       type: "line",
       smooth: true,
       // prettier-ignore
-      data: [],
+      data: [] as number[],
       markArea: {
         itemStyle: {
           color: "rgba(255, 173, 177, 0.4)",
@@ -167,7 +169,7 @@ let userData: Ref<UserData> = ref({
 });
 watchEffect(() => {
   getWeekTime();
-  // getTodayTime();
+  getTodayTime();
   userData.value = userDetail.value;
 });
 // watchEffect(() => {
@@ -178,7 +180,7 @@ watchEffect(() => {
 loading.value = false;
 onMounted(() => {
   getWeekTime();
-  // getTodayTime();
+  getTodayTime();
 });
 </script>
 
