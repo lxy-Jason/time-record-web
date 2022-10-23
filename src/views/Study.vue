@@ -50,11 +50,9 @@ import { Notify, Circle, Button, Dialog } from "vant";
 import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
 import { timeDiff } from "@/utils/timeDiff";
-import useUpdateHome from "@/store/modules/useUpdateHome";
 import { useUserDetail } from "@/store/index";
 
 const userDetail = useUserDetail();
-const update = useUpdateHome();
 let totalTime = ref("00:00:00");
 let seconds = ref(0);
 let minutes = ref(0);
@@ -179,7 +177,6 @@ const getWeekTime = async () => {
   const res = await getWeekApi(username);
   console.log(res);
   loading.value = false;
-  userDetail.getUserWeek();
   const { time } = res;
   let temp = time.split(":");
   let second = Number(temp.pop());
@@ -197,7 +194,7 @@ const timeUpload = async (data: object) => {
     Notify({ type: "success", message: "时间上传成功" });
     // 上传成功后重新获取总时长
     getWeekTime();
-    update.$patch({ value: true });
+    userDetail.getUserWeek();
   } else {
     Notify({ type: "warning", message: "时间上传失败" });
   }

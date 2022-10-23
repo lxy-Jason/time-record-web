@@ -20,20 +20,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { useShowBack, useUserDetail } from "@/store";
-import { storeToRefs } from "pinia";
+// import { useRouter } from "vue-router";
+// import { useShowBack, useUserDetail } from "@/store";
 
-const ShowBack = useShowBack();
-const userDetail = useUserDetail();
-let { showBack } = storeToRefs(ShowBack);
-const router = useRouter();
+// const ShowBack = useShowBack();
+// const userDetail = useUserDetail();
+// const router = useRouter();
 
 const props = defineProps({
   username: {
     type: String,
-    default:
-      JSON.parse(localStorage.getItem("user-info") as string).username || "",
+    default: localStorage.getItem("username") || "",
   },
   time: {
     type: String,
@@ -52,10 +49,10 @@ const jump2detail = () => {
     rank: props.index,
   };
   console.log(userData);
-  userDetail.$patch({ data: userData });
-  if (showBack.value) {
-    router.push({ path: "detail" });
-  }
+  // userDetail.$patch({ data: userData });
+  // if (ShowBack.showBack) {
+  //   router.push({ path: "detail" });
+  // }
 };
 </script>
 

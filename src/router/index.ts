@@ -1,5 +1,3 @@
-import pinia from "@/store";
-import useUserInfo from "@/store/modules/useUserInfo";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -44,7 +42,7 @@ const router = createRouter({
   history: createWebHashHistory(),
 });
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   const isAuthenticated = localStorage.getItem("token");
   if (
     // 检查用户是否已登录
