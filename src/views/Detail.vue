@@ -1,6 +1,6 @@
 <template>
   <div class="relative mx-1 bg-white p-2">
-    <div class="back" v-if="showBack" @click="back2pank">
+    <div class="back" v-if="showBack" @click="goBack">
       <img src="@/assets/fanhui.svg" />
     </div>
     <User
@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import User from "@/components/user.vue";
 import { useRouter } from "vue-router";
-import { ref, watchEffect, Ref, onMounted } from "vue";
+import { ref, Ref, onMounted } from "vue";
 import { getUserTodayTimeApi, getUserEverydayTimeApi } from "@/request/api";
 import getHour from "@/utils/getHour";
 import VChart from "vue-echarts";
@@ -25,21 +25,15 @@ import { useShowBack, useUserDetail } from "@/store";
 import { storeToRefs } from "pinia";
 
 const ShowBack = useShowBack();
-const UserDetail = useUserDetail();
+const userDetail = useUserDetail();
 let { showBack } = storeToRefs(ShowBack);
-let { userDetail } = storeToRefs(UserDetail);
 const router = useRouter();
-const back2pank = () => {
-  router.push({ path: "ranking" });
+const goBack = () => {
+  router.go(-1);
 };
-const loading = ref(true);
-let loadingWeek = ref(false);
-let loadingDay = ref(false);
 //获取本周数据
 const getWeekTime = async () => {
-  loading.value = true;
-  loadingWeek.value = false;
-  const res = await getUserEverydayTimeApi(userDetail.value.username);
+  const res = await getUserEverydayTimeApi(userDetail.data.username);
   console.log(res);
 
   if (res.code === 200) {
@@ -53,14 +47,11 @@ const getWeekTime = async () => {
       });
     }
   }
-  loadingWeek.value = true;
 };
 const maxValue = ref(0);
 //获取当天数据
 const getTodayTime = async () => {
-  // loading.value = true;
-  // loadingDay.value = false;
-  const res = await getUserTodayTimeApi(userDetail.value.username);
+  const res = await getUserTodayTimeApi(userDetail.data.username);
   if (res.code === 200) {
     console.log(res);
     if (Array.isArray(res.data)) {
@@ -69,7 +60,6 @@ const getTodayTime = async () => {
       });
     }
   }
-  loadingDay.value = true;
 };
 const option = ref({
   title: {
@@ -167,20 +157,16 @@ let userData: Ref<UserData> = ref({
   time: "00:00:00",
   rank: 0,
 });
-watchEffect(() => {
+
+userDetail.$subscribe(() => {
   getWeekTime();
   getTodayTime();
-  userData.value = userDetail.value;
+  userData.value = userDetail.data;
 });
-// watchEffect(() => {
-//   if (loadingDay.value && loadingWeek.value) {
-//     loading.value = false;
-//   }
-// });
-loading.value = false;
 onMounted(() => {
   getWeekTime();
   getTodayTime();
+  userData.value = userDetail.data;
 });
 </script>
 

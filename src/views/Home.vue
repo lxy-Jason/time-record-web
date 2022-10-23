@@ -43,13 +43,18 @@ import Study from "@/views/Study.vue";
 import { ref } from "vue";
 import { useFold } from "@/store";
 import { storeToRefs } from "pinia";
+import useUpdateHome from "@/store/modules/useUpdateHome";
 
+const update = useUpdateHome();
 const Fold = useFold();
 let { fold } = storeToRefs(Fold);
 const isShow = ref(false);
 const unfold = () => {
   isShow.value = !isShow.value;
 };
+update.$subscribe(() => {
+  console.log(111);
+});
 </script>
 
 <style scoped>

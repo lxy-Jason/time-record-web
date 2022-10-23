@@ -6,7 +6,7 @@
       layer-color="#ddd"
       class="circle"
       v-model:current-rate="currentRate"
-      speed="20"
+      speed="100"
       :rate="Rate"
       :color="gradientColor"
     >
@@ -49,10 +49,12 @@ import { timeUploadApi, getWeekApi } from "@/request/api";
 import { Notify, Circle, Button, Dialog } from "vant";
 import timeFormat from "@/utils/timeFormat";
 import { getTotalTime } from "@/utils/getTotalTime";
-import useUserInfo from "@/store/modules/useUserInfo";
 import { timeDiff } from "@/utils/timeDiff";
-import { log } from "console";
+import useUpdateHome from "@/store/modules/useUpdateHome";
+import { useUserDetail } from "@/store/index";
 
+const userDetail = useUserDetail();
+const update = useUpdateHome();
 let totalTime = ref("00:00:00");
 let seconds = ref(0);
 let minutes = ref(0);
@@ -61,11 +63,9 @@ let startFlag = ref(true);
 let timer: number;
 let setTimer: number;
 let loading = ref(true);
-let userInfoStore = useUserInfo();
 let Rate = ref(0);
 let currentRate = ref(0);
 const gradientColor = { "0%": "#3fecff", "100%": "#6149f6" };
-
 //计时器(后期优化动画)
 const timeCount = () => {
   if (startFlag.value) {
@@ -179,6 +179,7 @@ const getWeekTime = async () => {
   const res = await getWeekApi(username);
   console.log(res);
   loading.value = false;
+  userDetail.getUserWeek();
   const { time } = res;
   let temp = time.split(":");
   let second = Number(temp.pop());
@@ -190,12 +191,13 @@ const getWeekTime = async () => {
 };
 // 时间上传
 const timeUpload = async (data: object) => {
-  const res: any = await timeUploadApi(data);
+  const res = await timeUploadApi(data);
   console.log(res);
   if (res.code === 200) {
     Notify({ type: "success", message: "时间上传成功" });
     // 上传成功后重新获取总时长
     getWeekTime();
+    update.$patch({ value: true });
   } else {
     Notify({ type: "warning", message: "时间上传失败" });
   }

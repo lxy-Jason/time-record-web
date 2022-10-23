@@ -1,10 +1,8 @@
 import { createPinia, defineStore } from "pinia";
-import useUserInfo from "./modules/useUserInfo";
-
+import { getWeekApi } from "@/request/api";
 const pinia = createPinia();
 
-// useStore 可以是 useUser、useCart 之类的任何东西
-// 第一个参数是应用程序中 store 的唯一 id
+//home页侧边栏是否能展开 实际判断是否 786 <= x <= 1125
 export const useFold = defineStore("fold", {
   state: () => {
     return { fold: false };
@@ -15,6 +13,7 @@ export const useFold = defineStore("fold", {
     },
   },
 });
+//详情页是否显示返回箭头 实际判断是否 < 768px
 export const useShowBack = defineStore("showBack", {
   state: () => {
     return { showBack: false };
@@ -34,20 +33,23 @@ export interface DetailData {
 
 export const useUserDetail = defineStore("userDetail", {
   state: (): {
-    userDetail: DetailData;
+    data: DetailData;
   } => {
-    const userInfoStore = useUserInfo();
     return {
-      userDetail: {
-        username: userInfoStore.username,
+      data: {
+        username: localStorage.getItem("username") || "Jason",
         time: "00:00:00",
         rank: 0,
       },
     };
   },
   actions: {
-    getUserDatil(userDetail: DetailData) {
-      this.userDetail = userDetail;
+    async getUserWeek() {
+      const res = await getWeekApi(this.data.username);
+      console.log(res);
+      this.data.time = res.time;
+      this.data.rank = res.rank + 1;
+      return res;
     },
   },
 });
