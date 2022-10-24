@@ -1,13 +1,5 @@
 <template>
   <div class="h-full bg-white">
-    <!-- <h1 class="bg-blue-500 text-center text-lg">周榜</h1>
-    <User
-      v-for="(item, index) in userList"
-      :key="index"
-      :index="index + 1"
-      :username="item._id"
-      :time="item.time"
-    ></User> -->
     <van-tabs v-model:active="active" swipeable>
       <van-tab
         v-for="(item, index) in arr"

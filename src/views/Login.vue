@@ -43,7 +43,6 @@ import { Notify } from "vant";
 import "vant/es/notify/style";
 import { loginApi, registerApi } from "@/request/api";
 import windowSize from "@/utils/windowSize";
-
 const loginRules = {
   username: [
     {
@@ -74,7 +73,6 @@ const loginInfo = reactive({
   username: "Jason",
   password: "123456",
 });
-
 const loading = ref(false);
 
 const userLoginFormRef = ref();

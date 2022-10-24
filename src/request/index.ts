@@ -4,7 +4,7 @@ import { Get, Post } from "@/types";
 const instance = axios.create({
   // baseURL: "https://api.aiwan.run/",
   // baseURL: "/api",
-  baseURL: "http://localhost:3000/",
+  baseURL: "http://182.61.29.159:3337/",
   timeout: 5000,
 });
 // 封装 get 方法，类型为Get

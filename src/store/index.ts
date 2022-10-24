@@ -47,8 +47,10 @@ export const useUserDetail = defineStore("userDetail", {
     async getUserWeek() {
       const res = await getWeekApi(this.data.username);
       console.log(res);
-      this.data.time = res.time;
-      this.data.rank = res.rank + 1;
+      if (res.code === 200) {
+        this.data.time = res.time;
+        this.data.rank = res.rank + 1;
+      }
       return res;
     },
   },

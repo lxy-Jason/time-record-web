@@ -56,7 +56,6 @@ const onLoad = async (api: {
   (): unknown;
 }) => {
   // 异步更新数据
-  console.log(api);
   let res = await api();
   console.log(res);
   if (refreshing.value) {
@@ -73,9 +72,9 @@ const onLoad = async (api: {
     );
     console.log(arr);
     list.value = arr;
-    isEmpty.value = false;
   } else {
     console.log(res.err);
+    isEmpty.value = false;
   }
   // 加载状态结束
   loading.value = false;

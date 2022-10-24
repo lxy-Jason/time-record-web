@@ -1,5 +1,5 @@
 <template>
-  <div class="study bg-white" v-loading="loading">
+  <div class="study h-full bg-white" v-loading="loading">
     <!-- Study -->
     <Circle
       size="19.5rem"
@@ -249,12 +249,13 @@ let curTime = computed({
 
 <style scoped>
 .study {
+  height: 80vh;
   display: flex;
   justify-content: space-evenly;
   flex-direction: column;
   align-items: center;
   position: relative;
-  margin: 50px auto 0 auto;
+  padding-top: 1rem;
 }
 .circleText {
   font-weight: 500;

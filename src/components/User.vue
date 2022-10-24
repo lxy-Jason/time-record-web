@@ -20,12 +20,12 @@
 </template>
 
 <script setup lang="ts">
-// import { useRouter } from "vue-router";
-// import { useShowBack, useUserDetail } from "@/store";
+import { useRouter } from "vue-router";
+import { useShowBack, useUserDetail } from "@/store";
 
-// const ShowBack = useShowBack();
-// const userDetail = useUserDetail();
-// const router = useRouter();
+const ShowBack = useShowBack();
+const userDetail = useUserDetail();
+const router = useRouter();
 
 const props = defineProps({
   username: {
@@ -49,10 +49,10 @@ const jump2detail = () => {
     rank: props.index,
   };
   console.log(userData);
-  // userDetail.$patch({ data: userData });
-  // if (ShowBack.showBack) {
-  //   router.push({ path: "detail" });
-  // }
+  userDetail.$patch({ data: userData });
+  if (ShowBack.showBack) {
+    router.push({ path: "detail" });
+  }
 };
 </script>
 

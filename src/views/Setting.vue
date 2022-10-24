@@ -34,6 +34,7 @@ userDetail.$subscribe(() => {
 });
 onMounted(() => {
   getUserDetail();
+  userDetail.getUserWeek();
 });
 </script>
 
