@@ -51,8 +51,8 @@ const loginRules = {
       trigger: "blur",
     },
     {
-      pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]{3,10}$/,
-      message: "必须是3~10个字母或者数字~",
+      pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]{2,10}$/,
+      message: "必须是2~10个字母或者数字~",
       trigger: "blur",
     },
   ],
@@ -63,8 +63,8 @@ const loginRules = {
       trigger: "blur",
     },
     {
-      pattern: /^[a-z0-9]{3,}$/,
-      message: "必须是3位以上的字母或者数字~",
+      pattern: /^[A-Za-z0-9]{5,}$/,
+      message: "必须是5位以上的字母或者数字~",
       trigger: "blur",
     },
   ],
@@ -104,6 +104,7 @@ function register() {
       console.log(res);
       if (res.code === 201) {
         localStorage.setItem("username", res.username);
+        localStorage.setItem("token", res.token);
         Notify({ type: "success", message: "注册成功" });
         windowSize();
       } else {

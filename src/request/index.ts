@@ -16,19 +16,12 @@ const post: Post = async (url, params, config) => {
   const response = await instance.post(url, params, { ...config });
   return response;
 };
-instance.interceptors.request.use((config: Record<string, any> | any) => {
-  const token: string = window.localStorage.getItem("token") || "";
-  config.headers.token = token;
+instance.interceptors.request.use((config) => {
   return config;
 });
 instance.interceptors.response.use((value) => {
   // console.log(value);
-  if (
-    value.config.url === "users/login" ||
-    value.config.url === "users/register"
-  ) {
-    localStorage.setItem("token", value.headers.token);
-  }
+
   return value.data;
 });
 const request = { get, post };
