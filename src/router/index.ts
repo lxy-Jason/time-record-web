@@ -1,5 +1,3 @@
-import pinia from "@/store";
-import useUserInfo from "@/store/modules/useUserInfo";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -16,11 +14,6 @@ const routes: RouteRecordRaw[] = [
     path: "/login",
     name: "Login",
     component: () => import("@/views/Login.vue"),
-  },
-  {
-    path: "/register",
-    name: "Register",
-    component: () => import("@/views/Register.vue"),
   },
   {
     path: "/ranking",
@@ -49,16 +42,15 @@ const router = createRouter({
   history: createWebHashHistory(),
 });
 
-const userInfo = useUserInfo(pinia);
-
 router.beforeEach((to) => {
-  if (to.path !== "/login") {
-    if (!userInfo.username) {
-      return "/login";
-    }
-  }
-  if (to.path === "/login" && userInfo.username) {
-    return "/";
+  const isAuthenticated = localStorage.getItem("token");
+  if (
+    // 检查用户是否已登录
+    !isAuthenticated &&
+    to.name !== "Login"
+  ) {
+    // 将用户重定向到登录页面
+    return { name: "Login" };
   }
 });
 

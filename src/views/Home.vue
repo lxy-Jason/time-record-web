@@ -17,7 +17,7 @@
       </transition>
 
       <transition>
-        <div v-show="isShow" class="aside">
+        <div v-if="isShow" class="aside">
           <button class="unFold btn" @click="unfold">
             <div class="relative h-6 w-6">
               <img class="arrow unFold" src="@/assets/fanhui.svg" />
@@ -40,16 +40,20 @@ import Ranking from "@/views/Ranking.vue";
 import Detail from "@/views/Detail.vue";
 import Setting from "@/views/Setting.vue";
 import Study from "@/views/Study.vue";
-import { ref } from "vue";
-import { useFold } from "@/store";
+import { ref, onBeforeMount } from "vue";
+import { useFold, useUserDetail } from "@/store";
 import { storeToRefs } from "pinia";
 
 const Fold = useFold();
+const userDetail = useUserDetail();
 let { fold } = storeToRefs(Fold);
 const isShow = ref(false);
 const unfold = () => {
   isShow.value = !isShow.value;
 };
+onBeforeMount(() => {
+  userDetail.getUserWeek();
+});
 </script>
 
 <style scoped>
@@ -58,6 +62,7 @@ const unfold = () => {
   .left {
     @apply overflow-hidden lg:min-w-max hidden lg:block;
     min-width: 375px;
+    max-width: 375px;
   }
   .main {
     @apply w-full md:w-full lg:w-max-w-main  border-b-gray-300 border-x-2 relative overflow-hidden z-0;

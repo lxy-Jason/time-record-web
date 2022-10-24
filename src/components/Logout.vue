@@ -8,16 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import useUserInfo from "@/store/modules/useUserInfo";
 import router from "@/router";
 
-const userInfoStore = useUserInfo();
-
 function logout() {
-  userInfoStore.username = "";
   localStorage.clear();
   router.push("/login");
-  console.log(111);
 }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <van-tabbar v-if="isShow()" v-model="active">
+  <van-tabbar v-if="isShow()" v-model="active" class="absolute bottom-0">
     <van-tabbar-item name="Study" icon="home-o">学习</van-tabbar-item>
     <van-tabbar-item name="Ranking" icon="search">排行</van-tabbar-item>
     <van-tabbar-item name="Setting" icon="setting-o">设置</van-tabbar-item>
@@ -28,4 +28,9 @@ watchEffect(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.van-tabbar {
+  position: absolute;
+  bottom: 0;
+}
+</style>
