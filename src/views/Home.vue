@@ -60,7 +60,7 @@ onBeforeMount(() => {
 @tailwind components;
 @layer components {
   .left {
-    @apply overflow-hidden lg:min-w-max hidden lg:block;
+    @apply overflow-hidden lg:min-w-max hidden lg:block overflow-y-scroll;
     min-width: 375px;
     max-width: 375px;
   }
@@ -73,7 +73,7 @@ onBeforeMount(() => {
     min-width: 375px;
   }
   .aside {
-    @apply h-screen absolute z-50 top-0 border-b-gray-300 border-x-2;
+    @apply h-screen absolute z-50 top-0 border-b-gray-300 border-x-2 overflow-y-scroll;
     min-width: 375px;
     max-width: 375px;
   }
