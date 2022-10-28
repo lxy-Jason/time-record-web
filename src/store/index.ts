@@ -29,6 +29,7 @@ export interface DetailData {
   username: string;
   time: string;
   rank: number;
+  portrait: string;
 }
 
 export const useUserDetail = defineStore("userDetail", {
@@ -40,6 +41,7 @@ export const useUserDetail = defineStore("userDetail", {
         username: localStorage.getItem("username") || "Jason",
         time: "00:00:00",
         rank: 0,
+        portrait: "",
       },
     };
   },
@@ -51,6 +53,7 @@ export const useUserDetail = defineStore("userDetail", {
         this.data.time = res.time;
         this.data.rank = res.rank + 1;
       }
+      this.data.portrait = res.portrait;
       return res;
     },
   },

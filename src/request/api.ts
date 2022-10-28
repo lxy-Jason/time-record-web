@@ -31,6 +31,7 @@ interface UserData {
   username: string;
   time: string;
   rank: number;
+  portrait: string;
 }
 //获取用户总本周时长
 export const getWeekApi = (data: string) =>

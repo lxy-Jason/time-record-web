@@ -22,6 +22,12 @@ export interface loginRes {
   username: string;
 }
 
+export interface UserData {
+  username: string;
+  time: string;
+  rank: number;
+  portrait: string;
+}
 // 泛型接口
 export interface Get {
   <T>(url: string, params?: object, config?: AxiosRequestConfig): Promise<

@@ -7,6 +7,7 @@
       :username="userData.username"
       :time="userData.time"
       :index="userData.rank"
+      :portrait="userData.portrait"
     ></User>
     <v-chart class="charts" :option="option" />
     <v-chart class="charts" :option="dayOption" />
@@ -23,7 +24,7 @@ import VChart from "vue-echarts";
 import "echarts";
 import { useShowBack, useUserDetail } from "@/store";
 import { storeToRefs } from "pinia";
-
+import { UserData } from "@/types";
 const ShowBack = useShowBack();
 const userDetail = useUserDetail();
 let { showBack } = storeToRefs(ShowBack);
@@ -147,15 +148,12 @@ const dayOption = ref({
     },
   ],
 });
-type UserData = {
-  username: string;
-  time: string;
-  rank: number;
-};
+
 let userData: Ref<UserData> = ref({
   username: "",
   time: "00:00:00",
   rank: 0,
+  portrait: "",
 });
 
 userDetail.$subscribe(() => {
@@ -163,6 +161,7 @@ userDetail.$subscribe(() => {
   getTodayTime();
   userData.value = userDetail.data;
 });
+
 onMounted(() => {
   getWeekTime();
   getTodayTime();

@@ -5,6 +5,7 @@
       :username="userData.username"
       :time="userData.time"
       :index="userData.rank"
+      :portrait="userData.portrait"
     ></User>
   </div>
 </template>
@@ -22,11 +23,13 @@ let userData = ref({
   username,
   time: "00:00:00",
   rank: 0,
+  portrait: "",
 });
 const getUserDetail = async () => {
   if (userDetail.data.username === username) {
     userData.value.rank = userDetail.data.rank;
     userData.value.time = userDetail.data.time;
+    userData.value.portrait = userDetail.data.portrait;
   }
 };
 userDetail.$subscribe(() => {

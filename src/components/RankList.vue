@@ -12,6 +12,7 @@
           :index="index + 1"
           :username="item.username"
           :time="item.time"
+          :portrait="item.portrait"
         ></User>
       </div>
 
@@ -42,6 +43,7 @@ const props = defineProps({
 interface userInfo {
   username: string;
   time: string;
+  portrait: string;
 }
 const list: Ref<userInfo[]> = ref([]);
 const loading = ref(false);
@@ -65,9 +67,9 @@ const onLoad = async (api: {
   if (res.code === 200) {
     // 加载状态结束
     let arr = res.usersArr.map(
-      (item: { totalWeekTime: number; _id: unknown }) => {
+      (item: { portrait: string; totalWeekTime: number; _id: unknown }) => {
         let time = getTotalTime(item.totalWeekTime);
-        return { username: item._id, time };
+        return { username: item._id, time, portrait: item.portrait };
       }
     );
     console.log(arr);
