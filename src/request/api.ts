@@ -1,5 +1,5 @@
 import request from "./index";
-import { loginRes } from "@/types";
+import { loginRes, UserData } from "@/types";
 
 //登录
 export const loginApi = (data: object) =>
@@ -27,12 +27,6 @@ export const getAllUserTotalTime = () => request.get("/time/getTotalTime");
 export const getUserTodayTimeApi = (username: string) =>
   request.get(`time/getUserTodayTime?username=${username}`);
 
-interface UserData {
-  username: string;
-  time: string;
-  rank: number;
-  portrait: string;
-}
 //获取用户总本周时长
 export const getWeekApi = (data: string) =>
   request.get<UserData>(`time/getWeek?username=${data}`);
@@ -40,3 +34,13 @@ export const getWeekApi = (data: string) =>
 //上传用户学习时长
 export const timeUploadApi = (data: object) =>
   request.post("time/upload", data);
+
+//更新头像
+const config = {
+  headers: {
+    "Content-Type": "multipart/form-data",
+    username: localStorage.getItem("username") as string,
+  },
+};
+export const uploadPortrait = (file: object | undefined) =>
+  request.post("upload/portrait", file, config);

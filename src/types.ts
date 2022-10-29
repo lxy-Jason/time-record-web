@@ -1,4 +1,6 @@
 import { AxiosRequestConfig, CustomSuccessData } from "axios";
+import type { InjectionKey } from "vue";
+
 export interface LoginInfo {
   username: string;
   password: string;
@@ -39,3 +41,5 @@ export interface Post {
     CustomSuccessData<T>
   >;
 }
+
+export const close = Symbol() as InjectionKey<() => void>;
