@@ -73,7 +73,7 @@ onBeforeMount(() => {
     min-width: 375px;
   }
   .aside {
-    @apply h-screen absolute z-50 top-0 border-b-gray-300 border-x-2 overflow-y-scroll;
+    @apply h-screen absolute z-50 top-0 border-b-gray-300 border-x-2;
     min-width: 375px;
     max-width: 375px;
   }

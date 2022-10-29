@@ -1,5 +1,5 @@
 <template>
-  <van-overlay :show="show" @click="close" lazy-render>
+  <van-overlay :show="show" @click="close" lazy-render z-index="1000">
     <div class="wrapper" @click.stop>
       <Upload></Upload>
     </div>

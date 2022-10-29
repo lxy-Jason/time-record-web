@@ -1,5 +1,5 @@
 <template>
-  <div class="relative mx-1 bg-white p-2">
+  <div class="mx-1 bg-white p-2">
     <div class="back" v-if="showBack" @click="goBack">
       <img src="@/assets/fanhui.svg" />
     </div>

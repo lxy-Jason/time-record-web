@@ -54,6 +54,7 @@ export const useUserDetail = defineStore("userDetail", {
         this.data.rank = res.rank + 1;
       }
       this.data.portrait = res.portrait;
+      console.log("test");
       return res;
     },
   },
