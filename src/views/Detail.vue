@@ -46,7 +46,13 @@ const getWeekTime = async () => {
         }
         return getHour(item) || 0;
       });
+      option.value.radar.indicator.forEach(
+        (item: { name: string; max?: number }) => {
+          item["max"] = maxValue.value;
+        }
+      );
     }
+    maxValue.value = 0;
   }
 };
 const maxValue = ref(0);

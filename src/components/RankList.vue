@@ -83,6 +83,7 @@ onMounted(() => {
 }
 .list {
   min-height: 80vh;
+  height: 50rem;
 }
 .van-row {
   line-height: 30px;
