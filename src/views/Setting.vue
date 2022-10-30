@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import User from "@/components/User.vue";
-import { ref, onMounted, provide } from "vue";
+import { ref, onMounted, provide, onBeforeMount } from "vue";
 import { useUserDetail } from "@/store";
 import LogoutVue from "@/components/Logout.vue";
 import { close } from "@/types";
@@ -43,9 +43,12 @@ provide(close, isShow);
 userDetail.$subscribe(() => {
   getUserDetail();
 });
+onBeforeMount(() => {
+  userDetail.data.username = username;
+  userDetail.getUserWeek();
+});
 onMounted(() => {
   getUserDetail();
-  userDetail.getUserWeek();
 });
 </script>
 

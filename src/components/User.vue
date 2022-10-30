@@ -47,14 +47,8 @@ const props = defineProps({
 });
 
 const jump2detail = () => {
-  const userData = {
-    username: props.username,
-    time: props.time,
-    rank: props.index,
-    portrait: props.portrait,
-  };
-  console.log(userData);
-  userDetail.$patch({ data: userData });
+  userDetail.data.username = props.username;
+  userDetail.getUserWeek();
   if (ShowBack.showBack) {
     router.push({ path: "detail" });
   }

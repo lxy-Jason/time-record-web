@@ -52,6 +52,9 @@ export const useUserDetail = defineStore("userDetail", {
       if (res.code === 200) {
         this.data.time = res.time;
         this.data.rank = res.rank + 1;
+      } else {
+        this.data.time = "00:00:00";
+        this.data.rank = 0;
       }
       this.data.portrait = res.portrait;
       console.log("test");
