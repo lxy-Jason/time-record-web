@@ -9,11 +9,11 @@ import {
   Tabs,
   Divider,
   Empty,
-  PullRefresh,
+  Overlay,
+  Uploader,
 } from "vant";
 import "vant/lib/index.css";
 import pinia from "./store";
-// import "echarts";
 
 const app = createApp(App);
 app.use(pinia);
@@ -24,6 +24,6 @@ app.use(Tab);
 app.use(Tabs);
 app.use(Divider);
 app.use(Empty);
-app.use(PullRefresh);
-
+app.use(Overlay);
+app.use(Uploader);
 app.mount("#app");

@@ -14,10 +14,12 @@ declare module '@vue/runtime-core' {
     ElRow: typeof import('element-plus/es')['ElRow']
     Footer: typeof import('./src/components/Footer.vue')['default']
     Logout: typeof import('./src/components/Logout.vue')['default']
+    Overlay: typeof import('./src/components/Overlay.vue')['default']
     RankList: typeof import('./src/components/RankList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tabbar: typeof import('./src/components/Tabbar.vue')['default']
+    Upload: typeof import('./src/components/Upload.vue')['default']
     User: typeof import('./src/components/User.vue')['default']
   }
   export interface ComponentCustomProperties {

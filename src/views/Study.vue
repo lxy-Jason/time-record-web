@@ -28,15 +28,10 @@
         color="#246EEA"
         >开始学习</Button
       >
-      <Button
-        v-if="!startFlag"
-        @click="pauseTime"
-        plain
-        type="primary"
-        color="#EA1E10"
-        >暂停</Button
-      >
-      <Button v-if="!startFlag" type="primary" color="#FF8258" @click="saveTime"
+      <Button v-if="!startFlag" @click="pauseTime" type="warning">{{
+        pause ? "继续" : "暂停"
+      }}</Button>
+      <Button v-if="!startFlag" type="danger" plain @click="saveTime"
         >结束</Button
       >
     </div>
@@ -48,9 +43,8 @@ import { ref, computed, onMounted } from "vue";
 import { timeUploadApi, getWeekApi } from "@/request/api";
 import { Notify, Circle, Button, Dialog } from "vant";
 import timeFormat from "@/utils/timeFormat";
-import { getTotalTime } from "@/utils/getTotalTime";
-import { timeDiff } from "@/utils/timeDiff";
 import { useUserDetail } from "@/store/index";
+import { timeDiff } from "@/utils/timeDiff";
 
 const userDetail = useUserDetail();
 let totalTime = ref("00:00:00");
@@ -59,7 +53,6 @@ let minutes = ref(0);
 let hours = ref(0);
 let startFlag = ref(true);
 let timer: number;
-let setTimer: number;
 let loading = ref(true);
 let Rate = ref(0);
 let currentRate = ref(0);
@@ -69,11 +62,6 @@ const timeCount = () => {
   if (startFlag.value) {
     return;
   }
-  let studyTime = Number(localStorage.getItem("studyTime"));
-  setTimer = window.setTimeout(() => {
-    seconds.value++;
-    clearTimeout(setTimer);
-  }, (Math.ceil(studyTime / 1000) - studyTime / 1000) * 1000);
   timer = window.setInterval(() => {
     seconds.value++;
     if (seconds.value > 59) {
@@ -88,30 +76,31 @@ const timeCount = () => {
 };
 //开始学习
 const startLearn = () => {
-  // resetAnimation();
   let startTime = new Date().getTime();
   startFlag.value = false;
   timeCount();
   localStorage.setItem("startFlag", "false");
-  localStorage.setItem(
-    "startTime",
-    localStorage.getItem("startTime") || startTime.toString()
-  );
-  localStorage.setItem("lastPause", startTime.toString());
-  localStorage.setItem("studyTime", localStorage.getItem("studyTime") || "0");
+  localStorage.setItem("startTime", startTime.toString());
 };
-
+const pause = ref(false);
 //暂停计时
 const pauseTime = () => {
-  clearInterval(timer);
-  clearTimeout(setTimer);
-  let temppause = new Date().getTime();
-  let studyTime =
-    Number(localStorage.getItem("studyTime")) +
-    (temppause - Number(localStorage.getItem("lastPause")));
-  localStorage.setItem("studyTime", studyTime.toString());
-  localStorage.setItem("startFlag", "true");
-  startFlag.value = !startFlag.value;
+  if (!pause.value) {
+    let pauseStart = new Date().getTime();
+    clearInterval(timer);
+    //暂停开始
+    localStorage.setItem("pauseStart", pauseStart.toString());
+  } else {
+    timeCount();
+    let pauseEnd = new Date().getTime();
+    let pauseTime =
+      pauseEnd -
+      Number(localStorage.getItem("pauseStart") as string) +
+      Number(localStorage.getItem("pauseTime") || 0);
+    localStorage.setItem("pauseTime", pauseTime.toString());
+    localStorage.removeItem("pauseStart");
+  }
+  pause.value = !pause.value;
 };
 //重置时间
 const reset = () => {
@@ -123,22 +112,31 @@ const reset = () => {
   localStorage.removeItem("startFlag");
   localStorage.removeItem("startTime");
   localStorage.removeItem("studyTime");
-  localStorage.removeItem("lastPause");
+  localStorage.removeItem("pauseEnd");
+  localStorage.removeItem("pauseStart");
+  localStorage.removeItem("pauseTime");
 };
 const username = localStorage.getItem("username") || "Jason";
+//获取结束时间
+const getEndTime = () => {
+  let endTime;
+  //暂停时,结束时间就是暂停开始的时间
+  if (localStorage.getItem("pauseStart")) {
+    endTime = Number(localStorage.getItem("pauseStart"));
+  } else {
+    //正在计时就是现在
+    endTime = new Date().getTime();
+  }
+  return endTime;
+};
 //结束计时逻辑
 const finishTime = () => {
   clearInterval(timer);
-  clearTimeout(setTimer);
-  let temppause = new Date().getTime();
-  let studyTime =
-    Number(localStorage.getItem("studyTime")) +
-    (temppause - Number(localStorage.getItem("lastPause")));
-  localStorage.setItem("studyTime", studyTime.toString());
   localStorage.setItem("startFlag", "true");
   let startTime = Number(localStorage.getItem("startTime"));
-  let timeStamp = Number(localStorage.getItem("studyTime"));
-  let endTime = timeStamp + startTime;
+  let endTime = getEndTime();
+  let pauseTime = Number(localStorage.getItem("pauseTime")) || 0;
+  let timeStamp = endTime - startTime - pauseTime;
   let data = {
     username,
     time: getTimeDiff(),
@@ -168,8 +166,10 @@ const saveTime = () => {
 };
 // 获取当前时间与开始时间的差值
 const getTimeDiff = () => {
-  let studyTime = Number(localStorage.getItem("studyTime"));
-  return getTotalTime(studyTime);
+  let end = getEndTime();
+  let start = Number(localStorage.getItem("startTime")) || new Date().getTime();
+  let pause = Number(localStorage.getItem("pauseTime") || 0);
+  return timeDiff(start, end, pause);
 };
 //todo从后端获取当前已完成的时长
 const getWeekTime = async () => {
@@ -199,34 +199,25 @@ const timeUpload = async (data: object) => {
     Notify({ type: "warning", message: "时间上传失败" });
   }
 };
+
 //页面可见时刷新页面
 const updatePage = () => {
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState == "visible") {
-      let start =
-        Number(localStorage.getItem("startTime")) || new Date().getTime();
-      let end = new Date().getTime();
-      curTime.value = timeDiff(start, end) || "00:00:00";
+      curTime.value = getTimeDiff() || "00:00:00";
     }
   });
 };
 //初始化
 const init = () => {
   getWeekTime();
-  if (localStorage.getItem("startFlag") === "true") {
-    curTime.value = getTimeDiff() || "00:00:00";
-    timeCount();
-  } else if (localStorage.getItem("startFlag") === "false") {
-    let nowTime = new Date().getTime();
-    let studyTime =
-      nowTime -
-      Number(localStorage.getItem("lastPause")) +
-      Number(localStorage.getItem("studyTime"));
-    curTime.value = getTotalTime(studyTime);
-    startFlag.value = false;
-    timeCount();
+  startFlag.value = JSON.parse(localStorage.getItem("startFlag") || "true");
+  updatePage();
+  curTime.value = getTimeDiff() || "00:00:00";
+  if (localStorage.getItem("pauseStart")) {
+    pause.value = true;
   } else {
-    curTime.value = "00:00:00";
+    timeCount();
   }
 };
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative mx-1 bg-white p-2">
+  <div class="mx-1 bg-white p-2">
     <div class="back" v-if="showBack" @click="goBack">
       <img src="@/assets/fanhui.svg" />
     </div>
@@ -7,6 +7,7 @@
       :username="userData.username"
       :time="userData.time"
       :index="userData.rank"
+      :portrait="userData.portrait"
     ></User>
     <v-chart class="charts" :option="option" />
     <v-chart class="charts" :option="dayOption" />
@@ -23,7 +24,7 @@ import VChart from "vue-echarts";
 import "echarts";
 import { useShowBack, useUserDetail } from "@/store";
 import { storeToRefs } from "pinia";
-
+import { UserData } from "@/types";
 const ShowBack = useShowBack();
 const userDetail = useUserDetail();
 let { showBack } = storeToRefs(ShowBack);
@@ -45,7 +46,13 @@ const getWeekTime = async () => {
         }
         return getHour(item) || 0;
       });
+      option.value.radar.indicator.forEach(
+        (item: { name: string; max?: number }) => {
+          item["max"] = maxValue.value;
+        }
+      );
     }
+    maxValue.value = 0;
   }
 };
 const maxValue = ref(0);
@@ -147,15 +154,12 @@ const dayOption = ref({
     },
   ],
 });
-type UserData = {
-  username: string;
-  time: string;
-  rank: number;
-};
+
 let userData: Ref<UserData> = ref({
   username: "",
   time: "00:00:00",
   rank: 0,
+  portrait: "",
 });
 
 userDetail.$subscribe(() => {
@@ -163,6 +167,7 @@ userDetail.$subscribe(() => {
   getTodayTime();
   userData.value = userDetail.data;
 });
+
 onMounted(() => {
   getWeekTime();
   getTodayTime();

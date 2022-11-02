@@ -3,7 +3,7 @@
     <div class="online"></div>
     <!-- todo显示在线的标志 在style中添加绿色背景即可显示-->
     <div class="portrait">
-      <img src="@/assets/head.png" alt="头像" />
+      <img :src="portrait" alt="头像" />
     </div>
     <div class="profile">
       <p>
@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useShowBack, useUserDetail } from "@/store";
-
+import headImg from "@/assets/head.png";
 const ShowBack = useShowBack();
 const userDetail = useUserDetail();
 const router = useRouter();
@@ -40,16 +40,15 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  portrait: {
+    type: String,
+    default: headImg,
+  },
 });
 
 const jump2detail = () => {
-  const userData = {
-    username: props.username,
-    time: props.time,
-    rank: props.index,
-  };
-  console.log(userData);
-  userDetail.$patch({ data: userData });
+  userDetail.data.username = props.username;
+  userDetail.getUserWeek();
   if (ShowBack.showBack) {
     router.push({ path: "detail" });
   }
@@ -65,7 +64,7 @@ const jump2detail = () => {
   @apply w-2 h-2  rounded-full  inline-block m-2;
 }
 .portrait {
-  @apply w-16 h-16 bg-blue-500 rounded-full  inline-block mx-4 overflow-hidden;
+  @apply w-16 h-16 rounded-full  inline-block mx-4 overflow-hidden;
 }
 .profile {
   @apply h-auto w-auto align-middle;

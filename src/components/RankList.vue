@@ -1,22 +1,14 @@
 <template>
-  <div class="list">
-    <van-pull-refresh
-      v-model="refreshing"
-      success-text="刷新成功"
-      @refresh="onRefresh"
-    >
-      <div class="h-full overflow-auto">
-        <User
-          v-for="(item, index) in list"
-          :key="index"
-          :index="index + 1"
-          :username="item.username"
-          :time="item.time"
-        ></User>
-      </div>
-
-      <van-empty v-if="isEmpty" description="本周还没有人学习" />
-    </van-pull-refresh>
+  <div class="list mb-14 overflow-y-auto">
+    <User
+      v-for="(item, index) in list"
+      :key="index"
+      :index="index + 1"
+      :username="item.username"
+      :time="item.time"
+      :portrait="item.portrait"
+    ></User>
+    <van-empty v-if="isEmpty" description="本周还没有人学习" />
   </div>
 </template>
 
@@ -42,10 +34,10 @@ const props = defineProps({
 interface userInfo {
   username: string;
   time: string;
+  portrait: string;
 }
 const list: Ref<userInfo[]> = ref([]);
 const loading = ref(false);
-const refreshing = ref(false);
 const isEmpty = ref(true);
 const apiArr = [getAllUserWeekTime, getAllUserMonthTime, getAllUserTotalTime];
 
@@ -58,36 +50,25 @@ const onLoad = async (api: {
   // 异步更新数据
   let res = await api();
   console.log(res);
-  if (refreshing.value) {
-    list.value = [];
-    refreshing.value = false;
-  }
+
   if (res.code === 200) {
     // 加载状态结束
     let arr = res.usersArr.map(
-      (item: { totalWeekTime: number; _id: unknown }) => {
+      (item: { portrait: string; totalWeekTime: number; _id: unknown }) => {
         let time = getTotalTime(item.totalWeekTime);
-        return { username: item._id, time };
+        return { username: item._id, time, portrait: item.portrait };
       }
     );
     console.log(arr);
     list.value = arr;
+    isEmpty.value = false;
   } else {
     console.log(res.err);
-    isEmpty.value = false;
   }
   // 加载状态结束
   loading.value = false;
 };
-//下拉刷新
-const onRefresh = () => {
-  // 清空列表数据
 
-  // 重新加载数据
-  // 将 loading 设置为 true，表示处于加载状态
-  loading.value = true;
-  onLoad(apiArr[props.active || 0]);
-};
 userDetail.$subscribe(() => {
   onLoad(apiArr[props.active || 0]);
 });
@@ -100,11 +81,10 @@ onMounted(() => {
 .van-cell {
   text-align: center;
 }
-
-.van-pull-refresh {
-  height: 80vh;
+.list {
+  min-height: 80vh;
+  height: 50rem;
 }
-
 .van-row {
   line-height: 30px;
 }

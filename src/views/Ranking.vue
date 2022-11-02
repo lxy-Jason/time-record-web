@@ -21,11 +21,4 @@ const arr = ref(["周榜", "月榜", "总榜"]);
 const active = ref("周榜");
 </script>
 
-<style scoped>
-.ranking {
-  height: 100%;
-}
-.van-tabs {
-  height: 100%;
-}
-</style>
+<style scoped></style>
