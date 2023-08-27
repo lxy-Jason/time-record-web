@@ -35,13 +35,14 @@ export const getWeekApi = (data: string) =>
 export const timeUploadApi = (data: object) =>
   request.post("time/upload", data);
 
-const username = localStorage.getItem("username") as string;
-//更新头像
-const config = {
-  headers: {
-    "Content-Type": "multipart/form-data",
-    username: encodeURIComponent(username),
-  },
+export const uploadPortrait = (file: object | undefined) => {
+  const username = localStorage.getItem("username") as string;
+  //更新头像
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      username: encodeURIComponent(username),
+    },
+  };
+  return  request.post("upload/portrait", file, config);
 };
-export const uploadPortrait = (file: object | undefined) =>
-  request.post("upload/portrait", file, config);
