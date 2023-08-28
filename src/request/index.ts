@@ -1,10 +1,15 @@
+/*
+ * @Author: xiangyue_li
+ * @Date: 2023-08-27 15:31:38
+ * @LastEditors: xiangyue_li
+ */
 import axios from "axios";
 import { Get, Post } from "@/types";
 
 const instance = axios.create({
   // baseURL: "https://api.aiwan.run/",
   // baseURL: "http://localhost:3000/",
-  baseURL: "http://182.61.29.159:3337/",
+  baseURL: "http://124.220.59.240:3334/",
   timeout: 5000,
 });
 // 封装 get 方法，类型为Get
